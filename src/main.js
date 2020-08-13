@@ -8,8 +8,8 @@ import {createExtraSectionTemplate} from "./view/extra-section.js";
 import {createStatisticsTemplate} from "./view/statistics.js";
 import {createDetailedInformationTemplate} from "./view/detailed-information.js";
 import {createDetailedInformationCommentTemplate} from "./view/detailed-information-comment.js";
-import {generateMovieCard} from "./mock/movie-card-mock.js";
-import {generateComment} from "./mock/comment-mock.js";
+import {generateMovieCard} from "./mock/movie-card.js";
+import {generateComment} from "./mock/comment.js";
 
 const NUMBER_FILMS = 22;
 const NUMBER_FILMS_PER_STEP = 5;
@@ -75,7 +75,7 @@ filmsListExtraElement.forEach((item) => {
     .forEach((film) => render(extraFilmListContainerElement, createMovieCardTemplate(film), `beforeend`));
   }
   if (nameExtra === `Most commented`) {
-    films.sort((a, b) => b.commentsCount - a.commentsCount);
+    films.sort((a, b) => b.comments.length - a.comments.length);
     films
     .slice(0, NUMBER_FILMS_IN_ADDITIONAL_BLOCKS)
     .forEach((film) => render(extraFilmListContainerElement, createMovieCardTemplate(film), `beforeend`));

@@ -7,12 +7,13 @@ export const createMovieCardTemplate = (film) => {
     genre,
     poster,
     description,
-    commentsCount,
+    comments,
     isWatchlist,
     isWatched,
     isFavorite
   } = film;
 
+  const commentsCount = comments.length;
   const watchlistClassName = isWatchlist ? `film-card__controls-item--active` : ``;
   const watchedClassName = isWatched ? `film-card__controls-item--active` : ``;
   const favoriteClassName = isFavorite ? `film-card__controls-item--active` : ``;
