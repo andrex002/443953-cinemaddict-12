@@ -40,8 +40,8 @@ export const createDetailedInformationTemplate = (film) => {
   const favoriteChecked = isFavorite ? `checked` : ``;
   const genresTemplate = createGenresTemplate(genres);
   const actorsList = createActorsList(actors);
-  const writersList = createWritersList(screenwriters);
 
+  const writersList = createWritersList(screenwriters);
 
   const filmDetailsComments =
     comments

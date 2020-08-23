@@ -20,6 +20,7 @@ export const render = (container, element, place) => {
     case RenderPosition.BEFOREEND:
       container.append(element);
       break;
+    default: throw new Error();
   }
 };
 
@@ -34,4 +35,15 @@ export const createElement = (template) => {
   newElement.innerHTML = template;
 
   return newElement.firstChild;
+};
+
+// Создает массив с рандомным количеством уникальных элементов из массива
+export const getRandomListElements = (arr) => {
+  let newList = [];
+  const numberElements = getRandomInteger(1, arr.length - 1);
+  for (let i = 0; i < numberElements; i++) {
+    newList.push(getRandomElement(arr));
+  }
+
+  return Array.from(new Set(newList));
 };
