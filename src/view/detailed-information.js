@@ -1,3 +1,6 @@
+import {createElement} from "../utils.js";
+import DetailedCommentView from "./detailed-information-comment.js";
+
 // Создает блок с жанрами
 const createGenresTemplate = (genres) => {
   return genres.map((genre) => {
@@ -6,14 +9,10 @@ const createGenresTemplate = (genres) => {
 };
 
 // Создает список с актерами
-const createActorsList = (actors) => {
-  return actors.join(`, `);
-};
+const createActorsList = (actors) => actors.join(`, `);
 
 // Создает список со сценаристами
-const createWritersList = (writers) => {
-  return writers.join(`, `);
-};
+const createWritersList = (writers) => writers.join(`, `);
 
 export const createDetailedInformationTemplate = (film) => {
   const {
@@ -27,14 +26,31 @@ export const createDetailedInformationTemplate = (film) => {
     dateOfRelease,
     duration,
     country,
+    comments,
     genres,
     description,
     ageRating,
+    isWatchlist,
+    isWatched,
+    isFavorite
   } = film;
 
+  const watchlistChecked = isWatchlist ? `checked` : ``;
+  const watchedChecked = isWatched ? `checked` : ``;
+  const favoriteChecked = isFavorite ? `checked` : ``;
   const genresTemplate = createGenresTemplate(genres);
   const actorsList = createActorsList(actors);
   const writersList = createWritersList(screenwriters);
+
+
+  const filmDetailsComments =
+    comments
+    .map((comment) => {
+      const detailedCommentComponent = new DetailedCommentView(comment);
+      return detailedCommentComponent.getTemplate();
+    })
+    .join(``);
+  const commentsCount = comments.length;
 
   return (
     `<section class="film-details">
@@ -101,23 +117,23 @@ export const createDetailedInformationTemplate = (film) => {
           </div>
 
           <section class="film-details__controls">
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist">
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${watchlistChecked}>
             <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched">
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${watchedChecked}>
             <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
+            <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${favoriteChecked}>
             <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
           </section>
         </div>
 
         <div class="form-details__bottom-container">
           <section class="film-details__comments-wrap">
-            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">4</span></h3>
+            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}</span></h3>
 
             <ul class="film-details__comments-list">
-
+              ${filmDetailsComments}
             </ul>
 
             <div class="film-details__new-comment">
@@ -155,3 +171,26 @@ export const createDetailedInformationTemplate = (film) => {
     </section>`
   );
 };
+
+export default class FilmCardDetails {
+  constructor(film) {
+    this.film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createDetailedInformationTemplate(this.film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

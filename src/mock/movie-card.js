@@ -1,24 +1,23 @@
-import {getRandomInteger} from '../utils.js';
-import {TITLES, POSTERS, DESCRIPTION_TEXT, PRODUCERS, SCREENWRITERS, ACTORS} from '../const.js';
+import {getRandomElement, getRandomInteger} from '../utils.js';
+import {TITLES, POSTERS, DESCRIPTION_TEXT, PRODUCERS, SCREENWRITERS, ACTORS, COUNTRIES, GENRES} from '../const.js';
 import {generateComment} from './comment.js';
 
-const generateTitle = () => TITLES[getRandomInteger(0, TITLES.length - 1)];
+const generateTitle = () => getRandomElement(TITLES);
 
-const generatePoster = () => POSTERS[getRandomInteger(0, POSTERS.length - 1)];
+const generatePoster = () => getRandomElement(POSTERS);
 
-const generateProducer = () => PRODUCERS[getRandomInteger(0, PRODUCERS.length - 1)];
+const generateProducer = () => getRandomElement(PRODUCERS);
 
-const generateScreenwriters = () => SCREENWRITERS[getRandomInteger(0, SCREENWRITERS.length - 1)];
+const generateScreenwriters = () => getRandomElement(SCREENWRITERS);
 
-const generateActors = () => ACTORS[getRandomInteger(0, ACTORS.length - 1)];
+const generateActors = () => getRandomElement(ACTORS);
 
 const generateDescription = () => {
   const descriptions = DESCRIPTION_TEXT.split(`. `);
-  const randomIndex = getRandomInteger(0, descriptions.length - 1);
-  return descriptions[randomIndex];
+  return getRandomElement(descriptions);
 };
 
-const generateComments = () => new Array(getRandomInteger(0, 20)).fill(``).map(generateComment);
+const generateComments = () => new Array(getRandomInteger(0, 10)).fill(``).map(generateComment);
 
 const generateRating = () => getRandomInteger(0, 100) / 10;
 
@@ -32,15 +31,14 @@ export const generateMovieCard = () => {
     rating: generateRating(),
     yearOfProduction: getRandomInteger(1950, 2020),
     duration: `1h 30m`,
-    genre: `Musical`,
     description: generateDescription(),
     comments: generateComments(),
     producer: generateProducer(),
     screenwriters: generateScreenwriters(),
     actors: generateActors(),
     dateOfRelease: `10 August 2020`,
-    country: `USA`,
-    genres: [`Musical`, `Drama`, `Comedy`],
+    country: getRandomElement(COUNTRIES),
+    genres: getRandomElement(GENRES),
     ageRating: `${getRandomInteger(0, 18)}+`,
     isWatchlist: getBoolean(),
     isWatched: getBoolean(),
