@@ -1,4 +1,6 @@
-export const createContentSectionTemplate = () => {
+import {createElement} from "../utils.js";
+
+const createContentSectionTemplate = () => {
   return (
     `<section class="films">
       <section class="films-list">
@@ -9,3 +11,25 @@ export const createContentSectionTemplate = () => {
     </section>`
   );
 };
+
+export default class ContentSection {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createContentSectionTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

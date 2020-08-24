@@ -1,10 +1,12 @@
-export const createMovieCardTemplate = (film) => {
+import {createElement} from "../utils.js";
+
+const createMovieCardTemplate = (film) => {
   const {
     title,
     rating,
     yearOfProduction,
     duration,
-    genre,
+    genres,
     poster,
     description,
     comments,
@@ -13,6 +15,7 @@ export const createMovieCardTemplate = (film) => {
     isFavorite
   } = film;
 
+  const genre = genres[0];
   const commentsCount = comments.length;
   const watchlistClassName = isWatchlist ? `film-card__controls-item--active` : ``;
   const watchedClassName = isWatched ? `film-card__controls-item--active` : ``;
@@ -41,3 +44,26 @@ export const createMovieCardTemplate = (film) => {
     </article>`
   );
 };
+
+export default class MovieCard {
+  constructor(film) {
+    this.film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createMovieCardTemplate(this.film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

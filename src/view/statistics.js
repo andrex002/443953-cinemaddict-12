@@ -1,7 +1,24 @@
-export const createStatisticsTemplate = (films) => {
-  const filmsAmount = films ? films.length : 0;
+import {createElement} from "../utils.js";
 
-  return (
-    `<p>${filmsAmount} movies inside</p>`
-  );
-};
+export default class Statistics {
+  constructor(filmsAmount) {
+    this.filmsAmount = filmsAmount;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return `<p>${this.filmsAmount} movies inside</p>`;
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
