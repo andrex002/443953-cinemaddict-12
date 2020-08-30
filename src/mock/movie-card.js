@@ -1,4 +1,4 @@
-import {addZero, getRandomElement, getRandomInteger, getRandomListElements} from '../utils.js';
+import {addZero, getRandomElement, getRandomInteger, getRandomListElements} from '../utils/common.js';
 import {TITLES, POSTERS, DESCRIPTION_TEXT, PRODUCERS, SCREENWRITERS, ACTORS, COUNTRIES, GENRES, MONTH} from '../const.js';
 import {generateComment} from './comment.js';
 

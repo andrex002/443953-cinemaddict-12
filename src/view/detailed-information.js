@@ -1,5 +1,5 @@
-import {createElement} from "../utils.js";
 import DetailedCommentView from "./detailed-information-comment.js";
+import AbstractView from "./abstract.js";
 
 // Создает блок с жанрами
 const createGenresTemplate = (genres) => {
@@ -172,25 +172,24 @@ export const createDetailedInformationTemplate = (film) => {
   );
 };
 
-export default class FilmCardDetails {
+export default class FilmCardDetails extends AbstractView {
   constructor(film) {
+    super();
     this.film = film;
-    this._element = null;
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
     return createDetailedInformationTemplate(this.film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click();
   }
 
-  removeElement() {
-    this._element = null;
+  setHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._clickHandler);
   }
 }
