@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import AbstractView from "./abstract.js";
 
 const createSiteMenuTemplate = (films) => {
   const watchlistAmount = films ? films.reduce((result, item) => result + +item.isWatchlist, 0) : 0;
@@ -18,25 +18,13 @@ const createSiteMenuTemplate = (films) => {
   );
 };
 
-export default class SiteMenu {
+export default class SiteMenu extends AbstractView {
   constructor(films) {
+    super();
     this.films = films;
-    this._element = null;
   }
 
   getTemplate() {
     return createSiteMenuTemplate(this.films);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

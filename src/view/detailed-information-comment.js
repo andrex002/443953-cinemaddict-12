@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import {createElement} from "../utils/render.js";
 
 const createDetailedInformationCommentTemplate = ({author, text, emoji, date}) => {
   return (

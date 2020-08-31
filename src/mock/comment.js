@@ -1,4 +1,4 @@
-import {getRandomElement, addZero} from '../utils.js';
+import {getRandomElement, addZero} from '../utils/common.js';
 import {USERS, EMOJI} from '../const.js';
 
 const generateDate = () => {
