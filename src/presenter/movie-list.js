@@ -29,6 +29,8 @@ export default class MovieList {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._films = null;
     this._currentFilmsArray = null;
+    this._filmsListExtraTopRatedComponent = new FilmsListExtraSectionView(`Top rated`);
+    this._filmsListExtraMostCommentedComponent = new FilmsListExtraSectionView(`Most commented`);
   }
 
   init(films) {
@@ -69,6 +71,8 @@ export default class MovieList {
 
     this._applySorting(sortType);
     this._filmsListContainer.innerHTML = ``;
+    remove(this._filmsListExtraTopRatedComponent);
+    remove(this._filmsListExtraMostCommentedComponent);
     this._renderedFilmCount = NUMBER_FILMS_PER_STEP;
     this._renderMainContent();
   }
@@ -132,20 +136,18 @@ export default class MovieList {
     // Отрисуем карточки с фильмами в блок "Top rated"
     let filmsRating = this._currentFilmsArray.slice();
 
-    const filmsListExtraTopRatedComponent = new FilmsListExtraSectionView(`Top rated`);
-    render(this._contentSectionComponent, filmsListExtraTopRatedComponent, RenderPosition.BEFOREEND);
+    render(this._contentSectionComponent, this._filmsListExtraTopRatedComponent, RenderPosition.BEFOREEND);
 
-    const extraTopRatedFilmListContainerElement = filmsListExtraTopRatedComponent.getElement().querySelector(`.films-list__container`);
+    const extraTopRatedFilmListContainerElement = this._filmsListExtraTopRatedComponent.getElement().querySelector(`.films-list__container`);
     filmsRating = filmsRating.sort((a, b) => b.rating - a.rating);
     this._renderCards(0, NUMBER_FILMS_IN_ADDITIONAL_BLOCKS, filmsRating, extraTopRatedFilmListContainerElement);
 
     // Отрисуем карточки с фильмами в блок "Most commented"
     let filmsComment = this._currentFilmsArray.slice();
 
-    const filmsListExtraMostCommentedComponent = new FilmsListExtraSectionView(`Most commented`);
-    render(this._contentSectionComponent, filmsListExtraMostCommentedComponent, RenderPosition.BEFOREEND);
+    render(this._contentSectionComponent, this._filmsListExtraMostCommentedComponent, RenderPosition.BEFOREEND);
 
-    const extraMostCommentedFilmListContainerElement = filmsListExtraMostCommentedComponent.getElement().querySelector(`.films-list__container`);
+    const extraMostCommentedFilmListContainerElement = this._filmsListExtraMostCommentedComponent.getElement().querySelector(`.films-list__container`);
     filmsComment = filmsComment.sort((a, b) => b.comments.length - a.comments.length);
     this._renderCards(0, NUMBER_FILMS_IN_ADDITIONAL_BLOCKS, filmsComment, extraMostCommentedFilmListContainerElement);
   }
