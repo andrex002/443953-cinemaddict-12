@@ -57,7 +57,7 @@ export const generateMovieCard = () => {
     originalTitle: ``,
     poster: generatePoster(),
     rating: generateRating(),
-    yearOfProduction: yearOfProductionFilm,
+    yearOfProduction: getRandomInteger(YearOfProduction.MIN, YearOfProduction.MAX),
     duration: generateDuration(),
     description: generateDescription(),
     comments: generateComments(),

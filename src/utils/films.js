@@ -1,7 +1,3 @@
-export const compareYear = (filmA, filmB) => {
-   return filmB.dateOfProduction - filmA.dateOfProduction;
-};
+export const compareYear = (filmA, filmB) => filmB.yearOfProduction - filmA.yearOfProduction;
 
-export const compareRating = (filmA, filmB) => {
-   return filmB.rating - filmA.rating;
-};
+export const compareRating = (filmA, filmB) => filmB.rating - filmA.rating;

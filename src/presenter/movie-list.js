@@ -48,18 +48,14 @@ export default class MovieList {
   }
 
   _applySorting(sortType) {
-    console.log(sortType)
     switch (sortType) {
       case SortType.DATE:
         this._currentFilmsArray.sort(compareYear);
-        console.log(this._currentFilmsArray)
         break;
       case SortType.RATING:
-        console.log(this._currentFilmsArray)
         this._currentFilmsArray.sort(compareRating);
-        console.log(this._currentFilmsArray)
         break;
-      default: 
+      default:
         this._currentFilmsArray = this._films.slice();
     }
 
@@ -72,11 +68,9 @@ export default class MovieList {
     }
 
     this._applySorting(sortType);
-    remove(this._contentSectionComponent);
-    render(this._movieListContainer, this._contentSectionComponent, RenderPosition.BEFOREEND);
+    this._filmsListContainer.innerHTML = ``;
     this._renderedFilmCount = NUMBER_FILMS_PER_STEP;
     this._renderMainContent();
-    console.log(this._renderMainContent)
   }
 
   // Обработчик клика кнопки 'load-more'
@@ -158,8 +152,6 @@ export default class MovieList {
 
   // Рендерит Главный контент (карточки фильмов и блоки-экстра)
   _renderMainContent() {
-    console.log(this._currentFilmsArray);
-    console.log(this._filmsListContainer);
     this._renderCards(0, Math.min(this._currentFilmsArray.length, NUMBER_FILMS_PER_STEP), this._currentFilmsArray, this._filmsListContainer);
 
     if (this._currentFilmsArray.length > NUMBER_FILMS_PER_STEP) {
