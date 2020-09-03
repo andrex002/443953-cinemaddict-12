@@ -188,7 +188,7 @@ export default class FilmCardDetails extends AbstractView {
     this._callback.click();
   }
 
-  setHandler(callback) {
+  setCloseBtnHandler(callback) {
     this._callback.click = callback;
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._clickHandler);
   }
