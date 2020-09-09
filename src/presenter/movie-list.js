@@ -1,11 +1,11 @@
 import {SortType} from "../const.js";
 import ContentSectionView from "../view/content-section.js";
 import NoFilmsView from "../view/no-films.js";
-import MovieCardView from "../view/movie-card.js";
-import FilmCardDetailsView from "../view/detailed-information.js";
+import FilmPresenter from "./film.js";
 import LoadMoreButtonView from "../view/load-more-button.js";
 import FilmsListExtraSectionView from "../view/extra-section.js";
 import SortView from "../view/sort.js";
+import {updateItem} from "../utils/common.js";
 import {render, RenderPosition, remove} from "../utils/render.js";
 import {compareYear, compareRating} from "../utils/films.js";
 
@@ -18,19 +18,24 @@ export default class MovieList {
 
     this._renderedFilmCount = NUMBER_FILMS_PER_STEP;
     this._currentSortType = SortType.DEFAULT;
+    this._filmPresenter = {};
 
     this._contentSectionComponent = new ContentSectionView();
     this._noFilmsComponent = new NoFilmsView();
     this._loadMoreButtonComponent = new LoadMoreButtonView();
     this._sortingComponent = new SortView();
-    this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
-    this._filmsListElement = this._contentSectionComponent.getElement().querySelector(`.films-list`);
-    this._filmsListContainer = this._filmsListElement.querySelector(`.films-list__container`);
-    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
-    this._films = null;
-    this._currentFilmsArray = null;
     this._filmsListExtraTopRatedComponent = new FilmsListExtraSectionView(`Top rated`);
     this._filmsListExtraMostCommentedComponent = new FilmsListExtraSectionView(`Most commented`);
+
+    this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+    this._handleCardChange = this._handleCardChange.bind(this);
+
+    this._filmsListElement = this._contentSectionComponent.getElement().querySelector(`.films-list`);
+    this._filmsListContainer = this._filmsListElement.querySelector(`.films-list__container`);
+    this._films = null;
+    this._currentFilmsArray = null;
+    
   }
 
   init(films) {
@@ -47,6 +52,12 @@ export default class MovieList {
     this._currentFilmsArray = films.slice();
 
     this._renderMainContent();
+  }
+
+  _handleCardChange(updatedFilm) {
+    this._currentFilmsArray = updateItem(this._currentFilmsArray, updatedFilm);
+    this._films = updateItem(this._films, updatedFilm);
+    this._filmPresenter[updatedFilm.id].init(updatedFilm);
   }
 
   _applySorting(sortType) {
@@ -100,35 +111,23 @@ export default class MovieList {
   }
 
   // Рендерит карточку фильма с функционалом показа попапа
-  _renderCard(film, listContainerComponent) {
-    const filmCardComponent = new MovieCardView(film);
-
-    render(listContainerComponent, filmCardComponent.getElement(), RenderPosition.BEFOREEND);
-
-    filmCardComponent.setHandler(() => {
-      this.filmsDetailsComponent = new FilmCardDetailsView(film);
-
-      render(document.body, this.filmsDetailsComponent, RenderPosition.BEFOREEND);
-
-      document.addEventListener(`keydown`, onEscKeyDown);
-
-      this.filmsDetailsComponent.setCloseBtnHandler(() => {
-        remove(this.filmsDetailsComponent);
-      });
-    });
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
-        evt.preventDefault();
-        remove(this.filmsDetailsComponent);
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
+  _renderCard(film, place) {
+    const filmPresenter = new FilmPresenter(place, this._handleCardChange);
+    filmPresenter.init(film);
+    this._filmPresenter[film.id] = filmPresenter;
   }
 
   // Рендерит карточки фильмов
   _renderCards(from, to, currentFilmsArray, place) {
     currentFilmsArray.slice(from, to).forEach((film) => this._renderCard(film, place));
+  }
+
+  _clearFilmList() {
+    Object
+      .values(this._filmPresenter)
+      .forEach((presenter) => presenter.destroy());
+    this._filmPresenter = {};
+    this._renderedFilmCount = NUMBER_FILMS_PER_STEP;
   }
 
   // Рендерит карточки фильмов в экстра-блоки
