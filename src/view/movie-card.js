@@ -1,4 +1,4 @@
-import AbstractView from "./abstract.js";
+import SmartView from "./smart.js";
 
 const createMovieCardTemplate = (film) => {
   const {
@@ -45,10 +45,10 @@ const createMovieCardTemplate = (film) => {
   );
 };
 
-export default class MovieCard extends AbstractView {
-  constructor(film) {
+export default class MovieCard extends SmartView {
+  constructor(data) {
     super();
-    this.film = film;
+    this._data = data;
     this._clickHandler = this._clickHandler.bind(this);
 
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
@@ -57,7 +57,7 @@ export default class MovieCard extends AbstractView {
   }
 
   getTemplate() {
-    return createMovieCardTemplate(this.film);
+    return createMovieCardTemplate(this._data);
   }
 
   _clickHandler(evt) {
@@ -69,18 +69,21 @@ export default class MovieCard extends AbstractView {
     evt.preventDefault();
     evt.target.classList.toggle(`film-card__controls-item--active`);
     this._callback.favoriteClick();
+    this.updateData({isFavorite: !this._data.isFavorite}, true);
   }
 
   _watchedClickHandler(evt) {
     evt.preventDefault();
     evt.target.classList.toggle(`film-card__controls-item--active`);
     this._callback.watchedClick();
+    this.updateData({isWatched: !this._data.isWatched}, true);
   }
 
   _watchlistClickHandler(evt) {
     evt.preventDefault();
     evt.target.classList.toggle(`film-card__controls-item--active`);
     this._callback.watchlistClick();
+    this.updateData({isWatchlist: !this._data.isWatchlist}, true);
   }
 
   setFavoriteCardClickHandler(callback) {
@@ -103,5 +106,13 @@ export default class MovieCard extends AbstractView {
     this.getElement().querySelector(`.film-card__poster`).addEventListener(`click`, this._clickHandler);
     this.getElement().querySelector(`.film-card__title`).addEventListener(`click`, this._clickHandler);
     this.getElement().querySelector(`.film-card__comments`).addEventListener(`click`, this._clickHandler);
+  }
+
+  restoreHandlers() {
+    this.setFavoriteCardClickHandler(this._callback.favoriteClick);
+    this.setWatchedCardClickHandler(this._callback.watchedClick);
+    this.setWatchlistCardClickHandler(this._callback.watchlistClick);
+
+    this.setHandler(this._callback.click);
   }
 }

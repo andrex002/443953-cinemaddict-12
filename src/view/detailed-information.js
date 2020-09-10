@@ -1,5 +1,5 @@
 import DetailedCommentView from "./detailed-information-comment.js";
-import AbstractView from "./abstract.js";
+import SmartView from "./smart.js";
 
 // Создает блок с жанрами
 const createGenresTemplate = (genres) => {
@@ -172,10 +172,10 @@ export const createDetailedInformationTemplate = (film) => {
   );
 };
 
-export default class FilmCardDetails extends AbstractView {
-  constructor(film) {
+export default class FilmCardDetails extends SmartView {
+  constructor(data) {
     super();
-    this.film = film;
+    this._data = data;
     this._clickHandler = this._clickHandler.bind(this);
     this._clickEmojiHandler = this._clickEmojiHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
@@ -184,7 +184,7 @@ export default class FilmCardDetails extends AbstractView {
   }
 
   getTemplate() {
-    return createDetailedInformationTemplate(this.film);
+    return createDetailedInformationTemplate(this._data);
   }
 
   _clickHandler(evt) {
@@ -195,12 +195,12 @@ export default class FilmCardDetails extends AbstractView {
   _favoriteClickHandler(evt) {
     evt.preventDefault();
     this._callback.favoriteClick();
-    console.log(555)
   }
 
   _watchedClickHandler(evt) {
     evt.preventDefault();
     this._callback.watchedClick();
+    
   }
 
   _watchlistClickHandler(evt) {
@@ -210,7 +210,6 @@ export default class FilmCardDetails extends AbstractView {
 
   setFavoriteCardClickHandler(callback) {
     this._callback.favoriteClick = callback;
-    console.log(111)
     this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, this._favoriteClickHandler);
   }
 
@@ -255,5 +254,10 @@ export default class FilmCardDetails extends AbstractView {
   setCloseBtnHandler(callback) {
     this._callback.click = callback;
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._clickHandler);
+  }
+
+  restoreHandlers() {
+    this.setEmojiClickHandler(this._callback.emojiClick);
+    this.setCloseBtnHandler(this._callback.click);
   }
 }

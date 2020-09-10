@@ -30,6 +30,7 @@ export default class MovieList {
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._handleCardChange = this._handleCardChange.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
 
     this._filmsListElement = this._contentSectionComponent.getElement().querySelector(`.films-list`);
     this._filmsListContainer = this._filmsListElement.querySelector(`.films-list__container`);
@@ -52,6 +53,10 @@ export default class MovieList {
     this._currentFilmsArray = films.slice();
 
     this._renderMainContent();
+  }
+
+  _handleModeChange() {
+    Object.values(this._filmPresenter).forEach((presenter) => presenter.resetView);
   }
 
   _handleCardChange(updatedFilm) {
@@ -110,9 +115,9 @@ export default class MovieList {
     render(this._filmsListElement, this._noFilmsComponent, RenderPosition.BEFOREEND);
   }
 
-  // Рендерит карточку фильма с функционалом показа попапа
+  // Рендерит карточку фильма
   _renderCard(film, place) {
-    const filmPresenter = new FilmPresenter(place, this._handleCardChange);
+    const filmPresenter = new FilmPresenter(place, this._handleCardChange, this._handleModeChange);
     filmPresenter.init(film);
     this._filmPresenter[film.id] = filmPresenter;
   }
