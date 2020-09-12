@@ -200,7 +200,6 @@ export default class FilmCardDetails extends SmartView {
   _watchedClickHandler(evt) {
     evt.preventDefault();
     this._callback.watchedClick();
-    
   }
 
   _watchlistClickHandler(evt) {
@@ -259,5 +258,8 @@ export default class FilmCardDetails extends SmartView {
   restoreHandlers() {
     this.setEmojiClickHandler(this._callback.emojiClick);
     this.setCloseBtnHandler(this._callback.click);
+    this.setFavoriteCardClickHandler(this._callback.favoriteClick);
+    this.setWatchedCardClickHandler(this._callback.watchedClick);
+    this.setWatchlistCardClickHandler(this._callback.watchlistClick);
   }
 }

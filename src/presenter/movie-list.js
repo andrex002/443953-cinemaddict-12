@@ -19,6 +19,8 @@ export default class MovieList {
     this._renderedFilmCount = NUMBER_FILMS_PER_STEP;
     this._currentSortType = SortType.DEFAULT;
     this._filmPresenter = {};
+    this._filmPresenterTopRated = {};
+    this._filmPresenterMostCommented = {};
 
     this._contentSectionComponent = new ContentSectionView();
     this._noFilmsComponent = new NoFilmsView();
@@ -36,7 +38,6 @@ export default class MovieList {
     this._filmsListContainer = this._filmsListElement.querySelector(`.films-list__container`);
     this._films = null;
     this._currentFilmsArray = null;
-    
   }
 
   init(films) {
@@ -56,7 +57,7 @@ export default class MovieList {
   }
 
   _handleModeChange() {
-    Object.values(this._filmPresenter).forEach((presenter) => presenter.resetView);
+    Object.values(this._filmPresenter).forEach((presenter) => presenter.resetView());
   }
 
   _handleCardChange(updatedFilm) {
@@ -84,12 +85,13 @@ export default class MovieList {
     if (this._currentSortType === sortType) {
       return;
     }
-
+    this._clearFilmList();
+    this._clearTopRatedFilmList();
+    this._clearMostCommentedFilmList();
     this._applySorting(sortType);
-    this._filmsListContainer.innerHTML = ``;
+    // this._filmsListContainer.innerHTML = ``;
     remove(this._filmsListExtraTopRatedComponent);
     remove(this._filmsListExtraMostCommentedComponent);
-    this._renderedFilmCount = NUMBER_FILMS_PER_STEP;
     this._renderMainContent();
   }
 
@@ -116,15 +118,21 @@ export default class MovieList {
   }
 
   // Рендерит карточку фильма
-  _renderCard(film, place) {
+  _renderCard(film, place, block) {
     const filmPresenter = new FilmPresenter(place, this._handleCardChange, this._handleModeChange);
     filmPresenter.init(film);
-    this._filmPresenter[film.id] = filmPresenter;
+    if (block === `top rated`) {
+      this._filmPresenterTopRated[film.id] = filmPresenter;
+    } else if (block === `most commented`) {
+      this._filmPresenterMostCommented[film.id] = filmPresenter;
+    } else {
+      this._filmPresenter[film.id] = filmPresenter;
+    }
   }
 
   // Рендерит карточки фильмов
-  _renderCards(from, to, currentFilmsArray, place) {
-    currentFilmsArray.slice(from, to).forEach((film) => this._renderCard(film, place));
+  _renderCards(from, to, currentFilmsArray, place, block) {
+    currentFilmsArray.slice(from, to).forEach((film) => this._renderCard(film, place, block));
   }
 
   _clearFilmList() {
@@ -133,6 +141,20 @@ export default class MovieList {
       .forEach((presenter) => presenter.destroy());
     this._filmPresenter = {};
     this._renderedFilmCount = NUMBER_FILMS_PER_STEP;
+  }
+
+  _clearTopRatedFilmList() {
+    Object
+      .values(this._filmPresenterTopRated)
+      .forEach((presenter) => presenter.destroy());
+    this._filmPresenterTopRated = {};
+  }
+
+  _clearMostCommentedFilmList() {
+    Object
+      .values(this._filmPresenterMostCommented)
+      .forEach((presenter) => presenter.destroy());
+    this._filmPresenterMostCommented = {};
   }
 
   // Рендерит карточки фильмов в экстра-блоки
@@ -144,7 +166,7 @@ export default class MovieList {
 
     const extraTopRatedFilmListContainerElement = this._filmsListExtraTopRatedComponent.getElement().querySelector(`.films-list__container`);
     filmsRating = filmsRating.sort((a, b) => b.rating - a.rating);
-    this._renderCards(0, NUMBER_FILMS_IN_ADDITIONAL_BLOCKS, filmsRating, extraTopRatedFilmListContainerElement);
+    this._renderCards(0, NUMBER_FILMS_IN_ADDITIONAL_BLOCKS, filmsRating, extraTopRatedFilmListContainerElement, `top rated`);
 
     // Отрисуем карточки с фильмами в блок "Most commented"
     let filmsComment = this._currentFilmsArray.slice();
@@ -153,12 +175,12 @@ export default class MovieList {
 
     const extraMostCommentedFilmListContainerElement = this._filmsListExtraMostCommentedComponent.getElement().querySelector(`.films-list__container`);
     filmsComment = filmsComment.sort((a, b) => b.comments.length - a.comments.length);
-    this._renderCards(0, NUMBER_FILMS_IN_ADDITIONAL_BLOCKS, filmsComment, extraMostCommentedFilmListContainerElement);
+    this._renderCards(0, NUMBER_FILMS_IN_ADDITIONAL_BLOCKS, filmsComment, extraMostCommentedFilmListContainerElement, `most commented`);
   }
 
   // Рендерит Главный контент (карточки фильмов и блоки-экстра)
   _renderMainContent() {
-    this._renderCards(0, Math.min(this._currentFilmsArray.length, NUMBER_FILMS_PER_STEP), this._currentFilmsArray, this._filmsListContainer);
+    this._renderCards(0, Math.min(this._currentFilmsArray.length, NUMBER_FILMS_PER_STEP), this._currentFilmsArray, this._filmsListContainer, `main container`);
 
     if (this._currentFilmsArray.length > NUMBER_FILMS_PER_STEP) {
       this._renderLoadMoreButton();

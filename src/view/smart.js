@@ -1,39 +1,39 @@
 import Abstract from "./abstract.js";
 
 export default class Smart extends Abstract {
-   constructor() {
-      super();
-      this._data = {};
-   }
+  constructor() {
+    super();
+    this._data = {};
+  }
 
-   updateData(update, justDataUpdating) {
-      if (!update) {
-         return;
-      }
+  updateData(update, justDataUpdating) {
+    if (!update) {
+      return;
+    }
 
-      this._data = Object.assign({}, this._data, update);
+    this._data = Object.assign({}, this._data, update);
 
-      if (justDataUpdating) {
-         return;
-      }
+    if (justDataUpdating) {
+      return;
+    }
 
-      this.updateElement();
-   }
+    this.updateElement();
+  }
 
-   updateElement() {
-      let prevElement = this.getElement();
-      const parent = prevElement.parentElement;
-      this.removeElement();
+  updateElement() {
+    let prevElement = this.getElement();
+    const parent = prevElement.parentElement;
+    this.removeElement();
 
-      const newElement = this.getElement();
+    const newElement = this.getElement();
 
-      parent.replaceChild(newElement, prevElement);
-      prevElement = null;
+    parent.replaceChild(newElement, prevElement);
+    prevElement = null;
 
-      this.restoreHandlers();
-   }
+    this.restoreHandlers();
+  }
 
-   restoreHandlers() {
-      throw new Error(`Abstract method not implemented: resetHandlers`);
-   }
+  restoreHandlers() {
+    throw new Error(`Abstract method not implemented: resetHandlers`);
+  }
 }
