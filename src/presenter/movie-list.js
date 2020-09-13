@@ -63,7 +63,17 @@ export default class MovieList {
   _handleCardChange(updatedFilm) {
     this._currentFilmsArray = updateItem(this._currentFilmsArray, updatedFilm);
     this._films = updateItem(this._films, updatedFilm);
-    this._filmPresenter[updatedFilm.id].init(updatedFilm);
+    if (this._filmPresenter[updatedFilm.id]) {
+      this._filmPresenter[updatedFilm.id].init(updatedFilm);
+    }
+
+    if (this._filmPresenterMostCommented[updatedFilm.id]) {
+      this._filmPresenterMostCommented[updatedFilm.id].init(updatedFilm);
+    }
+
+    if (this._filmPresenterTopRated[updatedFilm.id]) {
+      this._filmPresenterTopRated[updatedFilm.id].init(updatedFilm);
+    }
   }
 
   _applySorting(sortType) {
@@ -97,7 +107,7 @@ export default class MovieList {
 
   // Обработчик клика кнопки 'load-more'
   _handleShowMoreButtonClick() {
-    this._renderCards(this._renderedFilmCount, this._renderedFilmCount + NUMBER_FILMS_PER_STEP, this._currentFilmsArray, this._filmsListContainer);
+    this._renderCards(this._renderedFilmCount, this._renderedFilmCount + NUMBER_FILMS_PER_STEP, this._currentFilmsArray, this._filmsListContainer, this._filmPresenter);
     this._renderedFilmCount += NUMBER_FILMS_PER_STEP;
 
     if (this._renderedFilmCount >= this._films.length) {
@@ -118,21 +128,15 @@ export default class MovieList {
   }
 
   // Рендерит карточку фильма
-  _renderCard(film, place, block) {
+  _renderCard(film, place, presentersStore) {
     const filmPresenter = new FilmPresenter(place, this._handleCardChange, this._handleModeChange);
     filmPresenter.init(film);
-    if (block === `top rated`) {
-      this._filmPresenterTopRated[film.id] = filmPresenter;
-    } else if (block === `most commented`) {
-      this._filmPresenterMostCommented[film.id] = filmPresenter;
-    } else {
-      this._filmPresenter[film.id] = filmPresenter;
-    }
+    presentersStore[film.id] = filmPresenter;
   }
 
   // Рендерит карточки фильмов
-  _renderCards(from, to, currentFilmsArray, place, block) {
-    currentFilmsArray.slice(from, to).forEach((film) => this._renderCard(film, place, block));
+  _renderCards(from, to, currentFilmsArray, place, presentersStore) {
+    currentFilmsArray.slice(from, to).forEach((film) => this._renderCard(film, place, presentersStore));
   }
 
   _clearFilmList() {
@@ -166,7 +170,7 @@ export default class MovieList {
 
     const extraTopRatedFilmListContainerElement = this._filmsListExtraTopRatedComponent.getElement().querySelector(`.films-list__container`);
     filmsRating = filmsRating.sort((a, b) => b.rating - a.rating);
-    this._renderCards(0, NUMBER_FILMS_IN_ADDITIONAL_BLOCKS, filmsRating, extraTopRatedFilmListContainerElement, `top rated`);
+    this._renderCards(0, NUMBER_FILMS_IN_ADDITIONAL_BLOCKS, filmsRating, extraTopRatedFilmListContainerElement, this._filmPresenterTopRated);
 
     // Отрисуем карточки с фильмами в блок "Most commented"
     let filmsComment = this._currentFilmsArray.slice();
@@ -175,12 +179,12 @@ export default class MovieList {
 
     const extraMostCommentedFilmListContainerElement = this._filmsListExtraMostCommentedComponent.getElement().querySelector(`.films-list__container`);
     filmsComment = filmsComment.sort((a, b) => b.comments.length - a.comments.length);
-    this._renderCards(0, NUMBER_FILMS_IN_ADDITIONAL_BLOCKS, filmsComment, extraMostCommentedFilmListContainerElement, `most commented`);
+    this._renderCards(0, NUMBER_FILMS_IN_ADDITIONAL_BLOCKS, filmsComment, extraMostCommentedFilmListContainerElement, this._filmPresenterMostCommented);
   }
 
   // Рендерит Главный контент (карточки фильмов и блоки-экстра)
   _renderMainContent() {
-    this._renderCards(0, Math.min(this._currentFilmsArray.length, NUMBER_FILMS_PER_STEP), this._currentFilmsArray, this._filmsListContainer, `main container`);
+    this._renderCards(0, Math.min(this._currentFilmsArray.length, NUMBER_FILMS_PER_STEP), this._currentFilmsArray, this._filmsListContainer, this._filmPresenter);
 
     if (this._currentFilmsArray.length > NUMBER_FILMS_PER_STEP) {
       this._renderLoadMoreButton();
