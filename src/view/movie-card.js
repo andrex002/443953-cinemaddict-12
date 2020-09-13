@@ -1,4 +1,5 @@
 import SmartView from "./smart.js";
+import {formatDurationInMinutes} from "../utils/films.js";
 
 const createMovieCardTemplate = (film) => {
   const {
@@ -30,7 +31,7 @@ const createMovieCardTemplate = (film) => {
       <p class="film-card__rating">${rating}</p>
       <p class="film-card__info">
         <span class="film-card__year">${yearOfProduction}</span>
-        <span class="film-card__duration">${duration}</span>
+        <span class="film-card__duration">${formatDurationInMinutes(duration)}</span>
         <span class="film-card__genre">${genre}</span>
       </p>
       <img src="./images/posters/${poster}" alt="" class="film-card__poster">

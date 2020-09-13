@@ -1,5 +1,6 @@
 import DetailedCommentView from "./detailed-information-comment.js";
 import SmartView from "./smart.js";
+import {formatDurationInMinutes, formatDateOfRelease} from "../utils/films.js";
 
 // Создает блок с жанрами
 const createGenresTemplate = (genres) => {
@@ -93,11 +94,11 @@ export const createDetailedInformationTemplate = (film) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Release Date</td>
-                  <td class="film-details__cell">${dateOfRelease}</td>
+                  <td class="film-details__cell">${formatDateOfRelease(dateOfRelease)}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
-                  <td class="film-details__cell">${duration}</td>
+                  <td class="film-details__cell">${formatDurationInMinutes(duration)}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>
