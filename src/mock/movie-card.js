@@ -7,6 +7,8 @@ const YearOfProduction = {
   MIN: 1950
 };
 
+const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
 const generateTitle = () => getRandomElement(TITLES);
 
 const generatePoster = () => getRandomElement(POSTERS);
@@ -53,6 +55,7 @@ generateDateOfRelease();
 
 export const generateMovieCard = () => {
   return {
+    id: generateId(),
     title: generateTitle(),
     originalTitle: ``,
     poster: generatePoster(),

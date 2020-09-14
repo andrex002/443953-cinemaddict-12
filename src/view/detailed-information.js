@@ -1,5 +1,5 @@
 import DetailedCommentView from "./detailed-information-comment.js";
-import AbstractView from "./abstract.js";
+import SmartView from "./smart.js";
 
 // Создает блок с жанрами
 const createGenresTemplate = (genres) => {
@@ -172,15 +172,19 @@ export const createDetailedInformationTemplate = (film) => {
   );
 };
 
-export default class FilmCardDetails extends AbstractView {
-  constructor(film) {
+export default class FilmCardDetails extends SmartView {
+  constructor(data) {
     super();
-    this.film = film;
+    this._data = data;
     this._clickHandler = this._clickHandler.bind(this);
+    this._clickEmojiHandler = this._clickEmojiHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._watchedClickHandler = this._watchedClickHandler.bind(this);
+    this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createDetailedInformationTemplate(this.film);
+    return createDetailedInformationTemplate(this._data);
   }
 
   _clickHandler(evt) {
@@ -188,8 +192,74 @@ export default class FilmCardDetails extends AbstractView {
     this._callback.click();
   }
 
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoriteClick();
+  }
+
+  _watchedClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.watchedClick();
+  }
+
+  _watchlistClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.watchlistClick();
+  }
+
+  setFavoriteCardClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, this._favoriteClickHandler);
+  }
+
+  setWatchedCardClickHandler(callback) {
+    this._callback.watchedClick = callback;
+    this.getElement().querySelector(`.film-details__control-label--watched`).addEventListener(`click`, this._watchedClickHandler);
+  }
+
+  setWatchlistCardClickHandler(callback) {
+    this._callback.watchlistClick = callback;
+    this.getElement().querySelector(`.film-details__control-label--watchlist`).addEventListener(`click`, this._watchlistClickHandler);
+  }
+
+  _clickEmojiHandler(evt) {
+    evt.preventDefault();
+    this._callback.emojiClick();
+
+    const emojiItems = document.querySelectorAll(`.film-details__emoji-item`);
+
+    emojiItems.forEach((emojiItem) => {
+      if (evt.target.value !== emojiItem.value) {
+        emojiItem.removeAttribute(`checked`);
+      } else {
+        emojiItem.setAttribute(`checked`, ``);
+      }
+    });
+
+    const addEmojiLabel = document.querySelector(`.film-details__add-emoji-label`);
+    const addEmojiImage = `<img src="./images/emoji/${evt.target.value}.png" width="55" height="55" alt="emoji-${evt.target.value}"></img>`;
+    addEmojiLabel.innerHTML = addEmojiImage;
+  }
+
+  setEmojiClickHandler(callback) {
+    this._callback.emojiClick = callback;
+    const emojis = this.getElement().querySelectorAll(`.film-details__emoji-item`);
+
+    emojis.forEach((emoji) => {
+      emoji.addEventListener(`click`, this._clickEmojiHandler);
+    });
+  }
+
   setCloseBtnHandler(callback) {
     this._callback.click = callback;
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._clickHandler);
+  }
+
+  restoreHandlers() {
+    this.setEmojiClickHandler(this._callback.emojiClick);
+    this.setCloseBtnHandler(this._callback.click);
+    this.setFavoriteCardClickHandler(this._callback.favoriteClick);
+    this.setWatchedCardClickHandler(this._callback.watchedClick);
+    this.setWatchlistCardClickHandler(this._callback.watchlistClick);
   }
 }
