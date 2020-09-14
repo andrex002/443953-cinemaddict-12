@@ -34,9 +34,4 @@ export const updateItem = (items, update) => {
     ...items.slice(index + 1)
   ];
 };
-export const generateDateInIsoFormat = () => {
-  const randomDateInMs = getRandomInteger(0, Date.now());
-  const date = new Date(randomDateInMs);
-  const dateToIso = date.toISOString();
-  return dateToIso;
-};
+export const generateDateInIsoFormat = () => new Date(getRandomInteger(0, Date.now())).toISOString();

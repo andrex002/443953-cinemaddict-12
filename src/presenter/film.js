@@ -70,6 +70,11 @@ export default class Film {
     }
   }
 
+  destroy() {
+    remove(this._filmCardComponent);
+    remove(this._filmDetailsComponent);
+  }
+
   _handleFavoriteClick() {
     this._changeData(Object.assign({}, this._film, {isFavorite: !this._film.isFavorite}));
   }
@@ -80,11 +85,6 @@ export default class Film {
 
   _handleWatchlistClick() {
     this._changeData(Object.assign({}, this._film, {isWatchlist: !this._film.isWatchlist}));
-  }
-
-  destroy() {
-    remove(this._filmCardComponent);
-    remove(this._filmDetailsComponent);
   }
 
   _handleCardClick() {

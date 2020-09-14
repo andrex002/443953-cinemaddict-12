@@ -19,10 +19,7 @@ const generateScreenwriters = () => getRandomListElements(SCREENWRITERS);
 
 const generateActors = () => getRandomListElements(ACTORS);
 
-const generateDuration = () => {
-  const minutes = getRandomInteger(30, 180);
-  return minutes;
-};
+const generateDuration = () => getRandomInteger(30, 180);
 
 const generateDescription = () => {
   const descriptions = DESCRIPTION_TEXT.split(`. `);
