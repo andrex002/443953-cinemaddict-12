@@ -60,20 +60,19 @@ export default class MovieList {
     Object.values(this._filmPresenter).forEach((presenter) => presenter.resetView());
   }
 
+  _initUpdatedFilm(updatedFilm, presenter) {
+    if (presenter[updatedFilm.id]) {
+      presenter[updatedFilm.id].init(updatedFilm);
+    }
+  }
+
   _handleCardChange(updatedFilm) {
     this._currentFilmsArray = updateItem(this._currentFilmsArray, updatedFilm);
     this._films = updateItem(this._films, updatedFilm);
-    if (this._filmPresenter[updatedFilm.id]) {
-      this._filmPresenter[updatedFilm.id].init(updatedFilm);
-    }
 
-    if (this._filmPresenterMostCommented[updatedFilm.id]) {
-      this._filmPresenterMostCommented[updatedFilm.id].init(updatedFilm);
-    }
-
-    if (this._filmPresenterTopRated[updatedFilm.id]) {
-      this._filmPresenterTopRated[updatedFilm.id].init(updatedFilm);
-    }
+    this._initUpdatedFilm(updatedFilm, this._filmPresenter);
+    this._initUpdatedFilm(updatedFilm, this._filmPresenterMostCommented);
+    this._initUpdatedFilm(updatedFilm, this._filmPresenterTopRated);
   }
 
   _applySorting(sortType) {

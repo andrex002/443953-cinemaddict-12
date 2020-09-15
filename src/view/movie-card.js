@@ -1,4 +1,5 @@
 import SmartView from "./smart.js";
+import {formatDurationInMinutes} from "../utils/films.js";
 
 const createMovieCardTemplate = (film) => {
   const {
@@ -30,7 +31,7 @@ const createMovieCardTemplate = (film) => {
       <p class="film-card__rating">${rating}</p>
       <p class="film-card__info">
         <span class="film-card__year">${yearOfProduction}</span>
-        <span class="film-card__duration">${duration}</span>
+        <span class="film-card__duration">${formatDurationInMinutes(duration)}</span>
         <span class="film-card__genre">${genre}</span>
       </p>
       <img src="./images/posters/${poster}" alt="" class="film-card__poster">
@@ -46,9 +47,9 @@ const createMovieCardTemplate = (film) => {
 };
 
 export default class MovieCard extends SmartView {
-  constructor(data) {
+  constructor(film) {
     super();
-    this._data = data;
+    this._film = film;
     this._clickHandler = this._clickHandler.bind(this);
 
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
@@ -57,33 +58,7 @@ export default class MovieCard extends SmartView {
   }
 
   getTemplate() {
-    return createMovieCardTemplate(this._data);
-  }
-
-  _clickHandler(evt) {
-    evt.preventDefault();
-    this._callback.click();
-  }
-
-  _favoriteClickHandler(evt) {
-    evt.preventDefault();
-    evt.target.classList.toggle(`film-card__controls-item--active`);
-    this._callback.favoriteClick();
-    this.updateData({isFavorite: !this._data.isFavorite}, true);
-  }
-
-  _watchedClickHandler(evt) {
-    evt.preventDefault();
-    evt.target.classList.toggle(`film-card__controls-item--active`);
-    this._callback.watchedClick();
-    this.updateData({isWatched: !this._data.isWatched}, true);
-  }
-
-  _watchlistClickHandler(evt) {
-    evt.preventDefault();
-    evt.target.classList.toggle(`film-card__controls-item--active`);
-    this._callback.watchlistClick();
-    this.updateData({isWatchlist: !this._data.isWatchlist}, true);
+    return createMovieCardTemplate(this._film);
   }
 
   setFavoriteCardClickHandler(callback) {
@@ -114,5 +89,31 @@ export default class MovieCard extends SmartView {
     this.setWatchlistCardClickHandler(this._callback.watchlistClick);
 
     this.setHandler(this._callback.click);
+  }
+
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click();
+  }
+
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    evt.target.classList.toggle(`film-card__controls-item--active`);
+    this._callback.favoriteClick();
+    this.updateData({isFavorite: !this._film.isFavorite}, true);
+  }
+
+  _watchedClickHandler(evt) {
+    evt.preventDefault();
+    evt.target.classList.toggle(`film-card__controls-item--active`);
+    this._callback.watchedClick();
+    this.updateData({isWatched: !this._film.isWatched}, true);
+  }
+
+  _watchlistClickHandler(evt) {
+    evt.preventDefault();
+    evt.target.classList.toggle(`film-card__controls-item--active`);
+    this._callback.watchlistClick();
+    this.updateData({isWatchlist: !this._film.isWatchlist}, true);
   }
 }
