@@ -6,17 +6,29 @@ import StatisticsView from "./view/statistics.js";
 import {render, RenderPosition} from "./utils/render.js";
 import MovieListPresenter from "./presenter/movie-list.js";
 import FilmsModel from "./model/films.js";
+import CommentsModel from "./model/comments.js";
+import { generateComments } from "./mock/comment.js";
 
 const NUMBER_FILMS = 22;
 
 
 // Получим массив с фильмами
 const films = new Array(NUMBER_FILMS).fill(``).map(generateMovieCard);
+const comments = generateComments(NUMBER_FILMS * 4);
 
 const filmsModel = new FilmsModel();
 filmsModel.setFilms(films);
+const commentsModel = new CommentsModel();
+commentsModel.set(comments);
 
 const filterModel = new FilterModel();
+
+for(let i = 0; i < films.length; i++) {
+   for(let j = 0; j < 4; j++) {
+      films[i].comments.push(comments[j]);
+      
+   }
+}
 
 const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
