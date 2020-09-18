@@ -69,7 +69,6 @@ export default class MovieList {
 
   _getFilms() {
     const filterType = this._filterModel.getFilter();
-    console.log(filterType)
     const films = this._filmsModel.getFilms();
     const filtredFilms = filter[filterType](films);
 
@@ -93,14 +92,11 @@ export default class MovieList {
     }
   }
 
-  // _handleCardChange(updatedFilm) {
-  //   // this._currentFilmsArray = updateItem(this._currentFilmsArray, updatedFilm);
-  //   // this._films = updateItem(this._films, updatedFilm);
-
-  //   this._initUpdatedFilm(updatedFilm, this._filmPresenter);
-  //   this._initUpdatedFilm(updatedFilm, this._filmPresenterMostCommented);
-  //   this._initUpdatedFilm(updatedFilm, this._filmPresenterTopRated);
-  // }
+  _handleCardChange(updatedFilm) {
+    this._initUpdatedFilm(updatedFilm, this._filmPresenter);
+    this._initUpdatedFilm(updatedFilm, this._filmPresenterMostCommented);
+    this._initUpdatedFilm(updatedFilm, this._filmPresenterTopRated);
+  }
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_FILM:
@@ -115,13 +111,16 @@ export default class MovieList {
     }
   }
 
-  _handleModelEvent(updateType, data) {
+  _handleModelEvent(updateType, updateFilm) {
     switch (updateType) {
-      case UpdateType.Minor:
+      case UpdateType.PATCH:
+        this._handleCardChange(updateFilm);
+        break;
+      case UpdateType.MINOR:
         this._clearMainContent();
         this._renderMainContent();
         break;
-      case UpdateType.Major:
+      case UpdateType.MAJOR:
         this._clearMainContent({resetRenderedFilmCount: true, resetSortType: true});
         this._renderMainContent();
         break;  

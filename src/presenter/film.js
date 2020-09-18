@@ -80,7 +80,7 @@ export default class Film {
     // this._changeData(Object.assign({}, this._film, {isFavorite: !this._film.isFavorite}));
     this._changeData(
       UserAction.UPDATE_FILM, 
-      UpdateType.MINOR, 
+      UpdateType.PATCH, 
       Object.assign({}, this._film, { isFavorite: !this._film.isFavorite })
     );
   }
@@ -88,7 +88,7 @@ export default class Film {
   _handleWatchedClick() {
     this._changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.MINOR, 
+      UpdateType.PATCH, 
       Object.assign({}, this._film, {isWatched: !this._film.isWatched})
     );
   }
@@ -96,7 +96,7 @@ export default class Film {
   _handleWatchlistClick() {
     this._changeData(
       UserAction.UPDATE_FILM,
-      UpdateType.MINOR, 
+      UpdateType.PATCH, 
       Object.assign({}, this._film, {isWatchlist: !this._film.isWatchlist})
     );
   }
