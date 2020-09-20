@@ -34,5 +34,6 @@ export const getRandomListElements = (arr) => {
 //     ...items.slice(index + 1)
 //   ];
 // };
-export const generateDateInIsoFormat = () => new Date(getRandomInteger(0, Date.now())).toISOString();
+// export const generateDateInIsoFormat = () => new Date(getRandomInteger(0, Date.now())).toISOString();
+export const generateDateInIsoFormat = (date) => new Date(date).toISOString();
 export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);

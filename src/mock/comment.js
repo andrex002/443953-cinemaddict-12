@@ -1,4 +1,4 @@
-import { getRandomElement, generateDateInIsoFormat, generateId} from '../utils/common.js';
+import { getRandomElement, generateDateInIsoFormat, generateId, getRandomInteger} from '../utils/common.js';
 import {USERS, EMOJI} from '../const.js';
 
 export const generateComment = () => {
@@ -7,7 +7,7 @@ export const generateComment = () => {
     author: getRandomElement(USERS),
     text: `Interesting setting and a good cast`,
     emoji: getRandomElement(EMOJI),
-    date: generateDateInIsoFormat(),
+    date: generateDateInIsoFormat(getRandomInteger(0, Date.now())),
   };
 };
 export const generateComments = (countComment) => {

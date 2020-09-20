@@ -15,7 +15,7 @@ const createActorsList = (actors) => actors.join(`, `);
 // Создает список со сценаристами
 const createWritersList = (writers) => writers.join(`, `);
 
-export const createDetailedInformationTemplate = (film) => {
+export const createDetailedInformationTemplate = (film, comments) => {
   const {
     poster,
     title,
@@ -27,7 +27,6 @@ export const createDetailedInformationTemplate = (film) => {
     dateOfRelease,
     duration,
     country,
-    comments,
     genres,
     description,
     ageRating,
@@ -44,14 +43,14 @@ export const createDetailedInformationTemplate = (film) => {
 
   const writersList = createWritersList(screenwriters);
 
-  const filmDetailsComments =
-    comments
-    .map((comment) => {
-      const detailedCommentComponent = new DetailedCommentView(comment);
-      return detailedCommentComponent.getTemplate();
-    })
-    .join(``);
-  const commentsCount = comments.length;
+  // const filmDetailsComments =
+  //   comments
+  //   .map((comment) => {
+  //     const detailedCommentComponent = new DetailedCommentView(comment);
+  //     return detailedCommentComponent.getTemplate();
+  //   })
+  //   .join(``);
+  const commentsCount = film.comments.length;
 
   return (
     `<section class="film-details">
@@ -134,7 +133,7 @@ export const createDetailedInformationTemplate = (film) => {
             <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}</span></h3>
 
             <ul class="film-details__comments-list">
-              ${filmDetailsComments}
+              
             </ul>
 
             <div class="film-details__new-comment">
@@ -174,9 +173,14 @@ export const createDetailedInformationTemplate = (film) => {
 };
 
 export default class FilmCardDetails extends SmartView {
-  constructor(data) {
+  constructor(data, comments) {
     super();
     this._data = data;
+    this._comments = comments;
+
+    this._commentText = ``;
+    this._emoji = ``;
+
     this._clickHandler = this._clickHandler.bind(this);
     this._clickEmojiHandler = this._clickEmojiHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
@@ -184,8 +188,12 @@ export default class FilmCardDetails extends SmartView {
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
   }
 
+  getEmoji() {
+    return this._emoji;
+  }
+
   getTemplate() {
-    return createDetailedInformationTemplate(this._data);
+    return createDetailedInformationTemplate(this._data, this._comments);
   }
 
   setFavoriteCardClickHandler(callback) {
@@ -263,5 +271,6 @@ export default class FilmCardDetails extends SmartView {
     });
 
     this._addsEmoji(evt);
+    this._emoji = evt.target.value;
   }
 }

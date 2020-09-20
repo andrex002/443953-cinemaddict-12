@@ -1,7 +1,9 @@
 import {render, RenderPosition, remove, replace} from "../utils/render.js";
 import MovieCardView from "../view/movie-card.js";
 import DetailedInformationView from "../view/detailed-information.js";
-import { UserAction, UpdateType } from "../const.js";
+import CommentsModel from "../model/comments.js";
+import CommentListPresenter from "./comment-list.js";
+import {UserAction, UpdateType} from "../const.js";
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -9,13 +11,16 @@ const Mode = {
 };
 
 export default class Film {
-  constructor(listContainerComponent, changeData, changeMode) {
+  constructor(listContainerComponent, changeData, changeMode, commentsModel) {
     this._listContainerComponent = listContainerComponent;
     this._changeData = changeData;
     this._changeMode = changeMode;
     this._filmCardComponent = null;
     this._filmDetailsComponent = null;
     this._mode = Mode.DEFAULT;
+    // this._commentsModel = new CommentsModel();
+    
+    this._commentsModel = commentsModel;
 
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
@@ -30,14 +35,15 @@ export default class Film {
 
   init(film) {
     this._film = film;
+    // this._comments = comments;
 
     const prevFilmCardComponent = this._filmCardComponent;
     const prevFilmDetailsComponent = this._filmDetailsComponent;
 
-    this._filmCardComponent = new MovieCardView(film);
+    this._filmCardComponent = new MovieCardView(this._film);
     this._filmCardComponent.setHandler(this._handleCardClick);
 
-    this._filmDetailsComponent = new DetailedInformationView(film);
+    this._filmDetailsComponent = new DetailedInformationView(this._film);
     this._filmDetailsComponent.setCloseBtnHandler(this._handleCrossClick);
 
     this._filmCardComponent.setFavoriteCardClickHandler(this._handleFavoriteClick);
@@ -48,6 +54,8 @@ export default class Film {
     this._filmDetailsComponent.setWatchedCardClickHandler(this._handleWatchedClick);
     this._filmDetailsComponent.setWatchlistCardClickHandler(this._handleWatchlistClick);
     this._filmDetailsComponent.setEmojiClickHandler(this._handleEmojiClick);
+
+    this._initDetailsCard();
 
     if (prevFilmCardComponent === null) {
       render(this._listContainerComponent, this._filmCardComponent, RenderPosition.BEFOREEND);
@@ -65,6 +73,15 @@ export default class Film {
     remove(prevFilmDetailsComponent);
   }
 
+  _initDetailsCard() {
+    // this._filmDetalisComponent = new DetailedInformationView(this._film);
+    this._commentsContainer = this._filmDetailsComponent.getElement().querySelector(`.film-details__comments-list`);
+    this._newCommentContainer = this._filmDetailsComponent.getElement().querySelector(`.film-details__comments-wrap`);
+
+    this._commentListPresenter = new CommentListPresenter(this._commentsContainer, this._newCommentContainer, this._film, this._handleCommentListUpdate, this._commentsModel);
+    this._commentListPresenter.init(this._commentsModel.getByIds(this._film.comments));
+  }
+
   resetView() {
     if (this._mode !== Mode.DEFAULT) {
       remove(this._filmDetailsComponent);
@@ -74,6 +91,24 @@ export default class Film {
   destroy() {
     remove(this._filmCardComponent);
     remove(this._filmDetailsComponent);
+  }
+
+  _handleCommentListUpdate() {
+    this._changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.PATCH,
+      Object.assign(
+        {},
+        this._film,
+        {
+          comments: this._commentsModel.get()
+        }
+      )
+    );
+  }
+
+  _handleCommentSubmit() {
+    this._changeData(UserAction.ADD_COMMENT, UpdateType.PATCH, comment);
   }
 
   _handleFavoriteClick() {
@@ -131,7 +166,11 @@ export default class Film {
     this._filmDetailsComponent.updateElement();
     render(document.body, this._filmDetailsComponent, RenderPosition.BEFOREEND);
     document.addEventListener(`keydown`, this._escKeyDownHandler);
-
+    // document.addEventListener(`keydown`, (evt) => {
+    //   if (evt.ctrlKey && evt.key === `Enter` || evt.key === `Command` && evt.key === `Enter`) {
+    //     console.log(`555`)
+    //   }
+    // });
     this._mode = Mode.SHOW;
   }
 }

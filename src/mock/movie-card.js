@@ -46,7 +46,7 @@ export const generateMovieCard = () => {
     producer: generateProducer(),
     screenwriters: generateScreenwriters(),
     actors: generateActors(),
-    dateOfRelease: generateDateInIsoFormat(),
+    dateOfRelease: generateDateInIsoFormat(getRandomInteger(0, Date.now())),
     country: getRandomElement(COUNTRIES),
     genres: generateGenres(),
     ageRating: `${getRandomInteger(0, 18)}+`,
