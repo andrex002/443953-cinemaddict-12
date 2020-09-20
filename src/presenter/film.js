@@ -164,7 +164,9 @@ export default class Film {
   _showCardDetails() {
     this._changeMode();
     this._filmDetailsComponent.updateElement();
+    this._initDetailsCard();
     render(document.body, this._filmDetailsComponent, RenderPosition.BEFOREEND);
+    
     document.addEventListener(`keydown`, this._escKeyDownHandler);
     // document.addEventListener(`keydown`, (evt) => {
     //   if (evt.ctrlKey && evt.key === `Enter` || evt.key === `Command` && evt.key === `Enter`) {
