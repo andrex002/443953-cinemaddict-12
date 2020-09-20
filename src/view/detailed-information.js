@@ -1,4 +1,3 @@
-import DetailedCommentView from "./detailed-information-comment.js";
 import SmartView from "./smart.js";
 import {formatDurationInMinutes, formatDateOfRelease} from "../utils/films.js";
 
@@ -15,7 +14,7 @@ const createActorsList = (actors) => actors.join(`, `);
 // Создает список со сценаристами
 const createWritersList = (writers) => writers.join(`, `);
 
-export const createDetailedInformationTemplate = (film, comments) => {
+export const createDetailedInformationTemplate = (film) => {
   const {
     poster,
     title,

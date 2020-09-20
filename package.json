@@ -18,7 +18,8 @@
     "webpack-dev-server": "3.11.0"
   },
   "dependencies": {
-    "moment": "2.27.0"
+    "moment": "2.27.0",
+    "he": "1.2.0"
   },
   "engines": {
     "node": "10"

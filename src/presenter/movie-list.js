@@ -36,7 +36,7 @@ export default class MovieList {
 
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
-    // this._handleCardChange = this._handleCardChange.bind(this);
+
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
@@ -47,8 +47,6 @@ export default class MovieList {
 
     this._filmsListElement = this._contentSectionComponent.getElement().querySelector(`.films-list`);
     this._filmsListContainer = this._filmsListElement.querySelector(`.films-list__container`);
-    // this._films = null;
-    // this._currentFilmsArray = null;
   }
 
   init() {
@@ -86,20 +84,33 @@ export default class MovieList {
     this._initUpdatedFilm(updatedFilm, this._filmPresenterMostCommented);
     this._initUpdatedFilm(updatedFilm, this._filmPresenterTopRated);
   }
-  _handleViewAction(actionType, updateType, updateFilm, updateComment) {
+  _handleViewAction(actionType, updateType, update, updateComment) {
     switch (actionType) {
       case UserAction.UPDATE_FILM:
-        this._filmsModel.updateFilm(updateType, updateFilm);
+        this._filmsModel.updateFilm(updateType, update);
         break;
       case UserAction.ADD_COMMENT:
-        this._commentsModel.add(updateComment);
-        // докинуть id комментария в movie.comments
-        updateFilm.comments.push(updateComment.id);
+        this._commentsModel.add(updateType, updateComment);
+        this._filmsModel.updateFilm(
+            updateType,
+            Object.assign(
+                {},
+                update,
+                {comments: [updateComment.id, ...update.comments]}
+            )
+        );
         break;
       case UserAction.DELETE_COMMENT:
-        this._commentsModel.delete(update.id);
-        // удалить id комментария в movie.comments
-        updateFilm.comments = updateFilm.comments.filter(comment => comment.id !== updateFilm.id);
+        this._commentsModel.delete(updateType, updateComment);
+        update.comments = update.comments.filter((comment) => comment !== updateComment.id);
+        this._filmsModel.updateFilm(
+            updateType,
+            Object.assign(
+                {},
+                update,
+                {comments: update.comments}
+            )
+        );
         break;
     }
   }
@@ -116,7 +127,7 @@ export default class MovieList {
       case UpdateType.MAJOR:
         this._clearMainContent({resetRenderedFilmCount: true, resetSortType: true});
         this._renderMainContent();
-        break;  
+        break;
     }
   }
 
@@ -125,13 +136,13 @@ export default class MovieList {
       return;
     }
     this._currentSortType = sortType;
-  
+
     this._clearMainContent({resetRenderedFilmCount: true});
     this._renderMainContent();
   }
 
   _renderSort() {
-    if(this._sortingComponent !== null) {
+    if (this._sortingComponent !== null) {
       this._sortingComponent = null;
     }
 
@@ -234,7 +245,7 @@ export default class MovieList {
       this._renderNoFilms();
       return;
     }
-    
+
     this._renderSort();
 
     render(this._movieListContainer, this._contentSectionComponent, RenderPosition.BEFOREEND);

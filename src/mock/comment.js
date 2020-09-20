@@ -1,4 +1,4 @@
-import { getRandomElement, generateDateInIsoFormat, generateId, getRandomInteger} from '../utils/common.js';
+import {getRandomElement, generateDateInIsoFormat, generateId, getRandomInteger} from '../utils/common.js';
 import {USERS, EMOJI} from '../const.js';
 
 export const generateComment = () => {
@@ -12,7 +12,7 @@ export const generateComment = () => {
 };
 export const generateComments = (countComment) => {
   const comments = [];
-  for(let i = 0; i < countComment; i++) {
+  for (let i = 0; i < countComment; i++) {
     comments.push(generateComment());
   }
   return comments;

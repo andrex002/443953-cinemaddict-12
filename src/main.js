@@ -17,7 +17,7 @@ const films = new Array(NUMBER_FILMS).fill(``).map(generateMovieCard);
 const comments = generateComments(NUMBER_FILMS * 4);
 
 for (let i = 0; i < films.length; i++) {
-   films[i].comments = comments.slice(i * 4, i * 4 + 4).map((comment) => comment.id);
+  films[i].comments = comments.slice(i * 4, i * 4 + 4).map((comment) => comment.id);
 }
 
 const filmsModel = new FilmsModel();
@@ -32,9 +32,6 @@ const siteFooterElement = document.querySelector(`.footer`);
 
 // Отрисуем блок юзера
 render(siteHeaderElement, new TitleUserView(), RenderPosition.BEFOREEND);
-
-// // Отрисуем меню сайта
-// render(siteMainElement, new SiteMenuView(filters, `ALL`), RenderPosition.BEFOREEND);
 
 // Отрисуем блок статистики
 render(siteFooterElement, new StatisticsView(films.length), RenderPosition.BEFOREEND);

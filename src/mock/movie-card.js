@@ -1,6 +1,5 @@
-import { generateDateInIsoFormat, getRandomElement, getRandomInteger, getRandomListElements, generateId} from '../utils/common.js';
+import {generateDateInIsoFormat, getRandomElement, getRandomInteger, getRandomListElements, generateId} from '../utils/common.js';
 import {TITLES, POSTERS, DESCRIPTION_TEXT, PRODUCERS, SCREENWRITERS, ACTORS, COUNTRIES, GENRES} from '../const.js';
-import {generateComment} from './comment.js';
 
 const YearOfProduction = {
   MAX: 2020,

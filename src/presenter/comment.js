@@ -14,9 +14,8 @@ export default class Comment {
   init(comment) {
     this._comment = comment;
     this._commentComponent = new DetailedCommentView(this._comment);
-
     this._commentComponent.setCommentDeleteClickHandler(this._handleCommentDeleteClick);
-  
+
     render(this._commentsContainer, this._commentComponent, RenderPosition.BEFOREEND);
   }
 
@@ -26,9 +25,9 @@ export default class Comment {
 
   _handleCommentDeleteClick() {
     this._removeData(
-      UserAction.DELETE_COMMENT,
-      UpdateType.PATCH,
-      this._comment
+        UserAction.DELETE_COMMENT,
+        UpdateType.PATCH,
+        this._comment
     );
   }
 }

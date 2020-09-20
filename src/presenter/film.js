@@ -1,7 +1,6 @@
 import {render, RenderPosition, remove, replace} from "../utils/render.js";
 import MovieCardView from "../view/movie-card.js";
 import DetailedInformationView from "../view/detailed-information.js";
-import CommentsModel from "../model/comments.js";
 import CommentListPresenter from "./comment-list.js";
 import {UserAction, UpdateType} from "../const.js";
 
@@ -18,8 +17,7 @@ export default class Film {
     this._filmCardComponent = null;
     this._filmDetailsComponent = null;
     this._mode = Mode.DEFAULT;
-    // this._commentsModel = new CommentsModel();
-    
+
     this._commentsModel = commentsModel;
 
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
@@ -29,13 +27,10 @@ export default class Film {
     this._handleCardClick = this._handleCardClick.bind(this);
     this._handleCrossClick = this._handleCrossClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
-
-    this._handleEmojiClick = this._handleEmojiClick.bind(this);
   }
 
   init(film) {
     this._film = film;
-    // this._comments = comments;
 
     const prevFilmCardComponent = this._filmCardComponent;
     const prevFilmDetailsComponent = this._filmDetailsComponent;
@@ -74,11 +69,10 @@ export default class Film {
   }
 
   _initDetailsCard() {
-    // this._filmDetalisComponent = new DetailedInformationView(this._film);
     this._commentsContainer = this._filmDetailsComponent.getElement().querySelector(`.film-details__comments-list`);
     this._newCommentContainer = this._filmDetailsComponent.getElement().querySelector(`.film-details__comments-wrap`);
 
-    this._commentListPresenter = new CommentListPresenter(this._commentsContainer, this._newCommentContainer, this._film, this._handleCommentListUpdate, this._commentsModel);
+    this._commentListPresenter = new CommentListPresenter(this._commentsContainer, this._newCommentContainer, this._film, this._changeData, this._commentsModel);
     this._commentListPresenter.init(this._commentsModel.getByIds(this._film.comments));
   }
 
@@ -93,46 +87,31 @@ export default class Film {
     remove(this._filmDetailsComponent);
   }
 
-  _handleCommentListUpdate() {
-    this._changeData(
-      UserAction.UPDATE_FILM,
-      UpdateType.PATCH,
-      Object.assign(
-        {},
-        this._film,
-        {
-          comments: this._commentsModel.get()
-        }
-      )
-    );
-  }
-
-  _handleCommentSubmit() {
-    this._changeData(UserAction.ADD_COMMENT, UpdateType.PATCH, comment);
-  }
+  // _handleCommentSubmit() {
+  //   this._changeData(UserAction.ADD_COMMENT, UpdateType.PATCH, comment);
+  // }
 
   _handleFavoriteClick() {
-    // this._changeData(Object.assign({}, this._film, {isFavorite: !this._film.isFavorite}));
     this._changeData(
-      UserAction.UPDATE_FILM, 
-      UpdateType.PATCH, 
-      Object.assign({}, this._film, { isFavorite: !this._film.isFavorite })
+        UserAction.UPDATE_FILM,
+        UpdateType.PATCH,
+        Object.assign({}, this._film, {isFavorite: !this._film.isFavorite})
     );
   }
 
   _handleWatchedClick() {
     this._changeData(
-      UserAction.UPDATE_FILM,
-      UpdateType.PATCH, 
-      Object.assign({}, this._film, {isWatched: !this._film.isWatched})
+        UserAction.UPDATE_FILM,
+        UpdateType.PATCH,
+        Object.assign({}, this._film, {isWatched: !this._film.isWatched})
     );
   }
 
   _handleWatchlistClick() {
     this._changeData(
-      UserAction.UPDATE_FILM,
-      UpdateType.PATCH, 
-      Object.assign({}, this._film, {isWatchlist: !this._film.isWatchlist})
+        UserAction.UPDATE_FILM,
+        UpdateType.PATCH,
+        Object.assign({}, this._film, {isWatchlist: !this._film.isWatchlist})
     );
   }
 
@@ -157,22 +136,13 @@ export default class Film {
     this._removeCardDetails();
   }
 
-  _handleEmojiClick() {
-
-  }
-
   _showCardDetails() {
     this._changeMode();
     this._filmDetailsComponent.updateElement();
     this._initDetailsCard();
     render(document.body, this._filmDetailsComponent, RenderPosition.BEFOREEND);
-    
+
     document.addEventListener(`keydown`, this._escKeyDownHandler);
-    // document.addEventListener(`keydown`, (evt) => {
-    //   if (evt.ctrlKey && evt.key === `Enter` || evt.key === `Command` && evt.key === `Enter`) {
-    //     console.log(`555`)
-    //   }
-    // });
     this._mode = Mode.SHOW;
   }
 }
