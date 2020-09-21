@@ -1,30 +1,51 @@
 import AbstractView from "./abstract.js";
 
-const createSiteMenuTemplate = (films) => {
-  const watchlistAmount = films ? films.reduce((result, item) => result + +item.isWatchlist, 0) : 0;
-  const historyAmount = films ? films.reduce((result, item) => result + +item.isWatched, 0) : 0;
-  const favoritesAmount = films ? films.reduce((result, item) => result + +item.isFavorite, 0) : 0;
+const createFilterItemTemplate = (filter, currentFilterType) => {
+  const {type, name, count} = filter;
 
-  return (
-    `<nav class="main-navigation">
+  return `<a href="#${name}" id="${type}" class="main-navigation__item ${type === currentFilterType ? `main-navigation__item--active` : ``}">${name} ${type !== `all` ? `<span class="main-navigation__item-count">${count}</span>` : ``}</a>`;
+};
+
+export const createSiteMenuTemplate = (filterItems, currentFilterType) => {
+  const filterItemsTemplate = filterItems.map((filter) => createFilterItemTemplate(filter, currentFilterType)).join(``);
+
+  return `<nav class="main-navigation">
       <div class="main-navigation__items">
-        <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
-        <a href="#watchlist" class="main-navigation__item">Watchlist <span class="main-navigation__item-count">${watchlistAmount}</span></a>
-        <a href="#history" class="main-navigation__item">History <span class="main-navigation__item-count">${historyAmount}</span></a>
-        <a href="#favorites" class="main-navigation__item">Favorites <span class="main-navigation__item-count">${favoritesAmount}</span></a>
+        ${filterItemsTemplate}
       </div>
       <a href="#stats" class="main-navigation__additional">Stats</a>
-    </nav>`
-  );
+    </nav>`;
 };
 
 export default class SiteMenu extends AbstractView {
-  constructor(films) {
+  constructor(filters, currentFilterType) {
     super();
-    this.films = films;
+    this._filters = filters;
+    this._currentFilter = currentFilterType;
+    this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
   }
 
   getTemplate() {
-    return createSiteMenuTemplate(this.films);
+    return createSiteMenuTemplate(this._filters, this._currentFilter);
+  }
+
+  _filterTypeChangeHandler(evt) {
+    evt.preventDefault();
+    let id;
+
+    if (evt.target.classList.contains(`main-navigation__item-count`)) {
+      id = evt.target.parentElement.id;
+    } else {
+      id = evt.target.id;
+    }
+    this._callback.filterTypeChange(id);
+  }
+
+  setFilterTypeChangeHandler(callback) {
+    this._callback.filterTypeChange = callback;
+    const filterLinks = this.getElement().querySelectorAll(`.main-navigation__item`);
+    filterLinks.forEach((filterLink) => {
+      filterLink.addEventListener(`click`, this._filterTypeChangeHandler);
+    });
   }
 }

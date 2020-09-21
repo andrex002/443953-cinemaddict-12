@@ -22,19 +22,31 @@ export const ACTORS = [`Bruce Lee`, `VanDamme`, `Jacke Chan`, `Danila Bagrov`, `
 export const COUNTRIES = [`USA`, `Russia`, `China`];
 export const GENRES = [`Musical`, `Comedy`, `Drama`, `Action`, `Horror`, `Adventure`, `Thriller`];
 export const USERS = [`Tim Macoveev`, `Vladimir Putin`, `Ronaldo`];
-export const EMOJI = [`angry.png`, `puke.png`, `sleeping.png`, `smile.png`];
+export const EMOJI = [`angry`, `puke`, `sleeping`, `smile`];
 export const DESCRIPTION_TEXT = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
 export const MONTH = [`January`, `February`, `March`, `April`, `May`, `June`, `July`, `August`, `September`, `October`, `November`, `December`];
-
-export const NavType = {
-  DEFAULT: `all`,
-  WATCHLIST: `watchlist`,
-  HISTORY: `history`,
-  FAVORITES: `favorites`
-};
 
 export const SortType = {
   DEFAULT: `default`,
   DATE: `by-date`,
   RATING: `by-rating`
+};
+
+export const UserAction = {
+  UPDATE_FILM: `UPDATE_FILM`,
+  ADD_COMMENT: `ADD_COMMENT`,
+  DELETE_COMMENT: `DELETE_COMMENT`
+};
+
+export const UpdateType = {
+  PATCH: `PATCH`,
+  MINOR: `MINOR`,
+  MAJOR: `MAJOR`
+};
+
+export const FilterType = {
+  ALL: `all`,
+  WATCHLIST: `watchlist`,
+  HISTORY: `history`,
+  FAVORITES: `favorites`,
 };

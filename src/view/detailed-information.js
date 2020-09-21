@@ -1,4 +1,3 @@
-import DetailedCommentView from "./detailed-information-comment.js";
 import SmartView from "./smart.js";
 import {formatDurationInMinutes, formatDateOfRelease} from "../utils/films.js";
 
@@ -27,7 +26,6 @@ export const createDetailedInformationTemplate = (film) => {
     dateOfRelease,
     duration,
     country,
-    comments,
     genres,
     description,
     ageRating,
@@ -44,14 +42,14 @@ export const createDetailedInformationTemplate = (film) => {
 
   const writersList = createWritersList(screenwriters);
 
-  const filmDetailsComments =
-    comments
-    .map((comment) => {
-      const detailedCommentComponent = new DetailedCommentView(comment);
-      return detailedCommentComponent.getTemplate();
-    })
-    .join(``);
-  const commentsCount = comments.length;
+  // const filmDetailsComments =
+  //   comments
+  //   .map((comment) => {
+  //     const detailedCommentComponent = new DetailedCommentView(comment);
+  //     return detailedCommentComponent.getTemplate();
+  //   })
+  //   .join(``);
+  const commentsCount = film.comments.length;
 
   return (
     `<section class="film-details">
@@ -134,38 +132,10 @@ export const createDetailedInformationTemplate = (film) => {
             <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}</span></h3>
 
             <ul class="film-details__comments-list">
-              ${filmDetailsComments}
+              
             </ul>
 
-            <div class="film-details__new-comment">
-              <div for="add-emoji" class="film-details__add-emoji-label"></div>
-
-              <label class="film-details__comment-label">
-                <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
-              </label>
-
-              <div class="film-details__emoji-list">
-                <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
-                <label class="film-details__emoji-label" for="emoji-smile">
-                  <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
-                </label>
-
-                <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
-                <label class="film-details__emoji-label" for="emoji-sleeping">
-                  <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
-                </label>
-
-                <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
-                <label class="film-details__emoji-label" for="emoji-puke">
-                  <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
-                </label>
-
-                <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
-                <label class="film-details__emoji-label" for="emoji-angry">
-                  <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
-                </label>
-              </div>
-            </div>
+            
           </section>
         </div>
       </form>
@@ -174,9 +144,14 @@ export const createDetailedInformationTemplate = (film) => {
 };
 
 export default class FilmCardDetails extends SmartView {
-  constructor(data) {
+  constructor(data, comments) {
     super();
     this._data = data;
+    this._comments = comments;
+
+    this._commentText = ``;
+    this._emoji = ``;
+
     this._clickHandler = this._clickHandler.bind(this);
     this._clickEmojiHandler = this._clickEmojiHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
@@ -184,8 +159,12 @@ export default class FilmCardDetails extends SmartView {
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
   }
 
+  getEmoji() {
+    return this._emoji;
+  }
+
   getTemplate() {
-    return createDetailedInformationTemplate(this._data);
+    return createDetailedInformationTemplate(this._data, this._comments);
   }
 
   setFavoriteCardClickHandler(callback) {
@@ -263,5 +242,6 @@ export default class FilmCardDetails extends SmartView {
     });
 
     this._addsEmoji(evt);
+    this._emoji = evt.target.value;
   }
 }

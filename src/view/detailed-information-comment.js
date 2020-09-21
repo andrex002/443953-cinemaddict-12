@@ -1,14 +1,15 @@
-import {createElement} from "../utils/render.js";
+import he from 'he';
 import {formatCommentDate} from "../utils/films.js";
+import SmartView from "./smart.js";
 
-const createDetailedInformationCommentTemplate = ({author, text, emoji, date}) => {
+const createDetailedInformationCommentTemplate = ({id, author, text, emoji, date}) => {
   return (
-    `<li class="film-details__comment">
+    `<li class="film-details__comment" id="${id}">
       <span class="film-details__comment-emoji">
-        <img src="./images/emoji/${emoji}" width="55" height="55" alt="emoji-smile">
+        <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
       </span>
       <div>
-        <p class="film-details__comment-text">${text}</p>
+        <p class="film-details__comment-text">${he.encode(text)}</p>
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${author}</span>
           <span class="film-details__comment-day">${formatCommentDate(date)}</span>
@@ -19,25 +20,25 @@ const createDetailedInformationCommentTemplate = ({author, text, emoji, date}) =
   );
 };
 
-export default class DetailedComment {
+export default class DetailedComment extends SmartView {
   constructor(comment) {
-    this.comment = comment;
-    this._element = null;
+    super();
+    this._comment = comment;
+
+    this._deleteButtonClickHandler = this._deleteButtonClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createDetailedInformationCommentTemplate(this.comment);
+    return createDetailedInformationCommentTemplate(this._comment);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _deleteButtonClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(this._comment);
   }
 
-  removeElement() {
-    this._element = null;
+  setCommentDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector(`.film-details__comment-delete`).addEventListener(`click`, this._deleteButtonClickHandler);
   }
 }

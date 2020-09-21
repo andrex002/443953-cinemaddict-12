@@ -1,13 +1,10 @@
-import {generateDateInIsoFormat, getRandomElement, getRandomInteger, getRandomListElements} from '../utils/common.js';
+import {generateDateInIsoFormat, getRandomElement, getRandomInteger, getRandomListElements, generateId} from '../utils/common.js';
 import {TITLES, POSTERS, DESCRIPTION_TEXT, PRODUCERS, SCREENWRITERS, ACTORS, COUNTRIES, GENRES} from '../const.js';
-import {generateComment} from './comment.js';
 
 const YearOfProduction = {
   MAX: 2020,
   MIN: 1950
 };
-
-const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
 const generateTitle = () => getRandomElement(TITLES);
 
@@ -28,7 +25,7 @@ const generateDescription = () => {
 
 const generateGenres = () => getRandomListElements(GENRES);
 
-const generateComments = () => new Array(getRandomInteger(0, 10)).fill(``).map(generateComment);
+// const generateComments = () => new Array(getRandomInteger(0, 10)).fill(``).map(generateComment);
 
 const generateRating = () => getRandomInteger(0, 100) / 10;
 
@@ -44,11 +41,11 @@ export const generateMovieCard = () => {
     yearOfProduction: getRandomInteger(YearOfProduction.MIN, YearOfProduction.MAX),
     duration: generateDuration(),
     description: generateDescription(),
-    comments: generateComments(),
+    comments: [],
     producer: generateProducer(),
     screenwriters: generateScreenwriters(),
     actors: generateActors(),
-    dateOfRelease: generateDateInIsoFormat(),
+    dateOfRelease: generateDateInIsoFormat(getRandomInteger(0, Date.now())),
     country: getRandomElement(COUNTRIES),
     genres: generateGenres(),
     ageRating: `${getRandomInteger(0, 18)}+`,
