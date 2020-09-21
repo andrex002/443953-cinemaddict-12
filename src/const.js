@@ -63,3 +63,5 @@ export const StatisticPeriod = {
   MONTH: `month`,
   YEAR: `year`
 };
+
+export const BAR_HEIGHT = 50;

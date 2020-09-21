@@ -24,7 +24,7 @@ for (let i = 0; i < films.length; i++) {
 }
 
 const filmsModel = new FilmsModel();
-filmsModel.setFilms(films);
+filmsModel.set(films);
 const commentsModel = new CommentsModel();
 commentsModel.set(comments);
 const filterModel = new FilterModel();
@@ -36,13 +36,12 @@ const siteMainElement = document.querySelector(`.main`);
 const siteFooterElement = document.querySelector(`.footer`);
 
 // Отрисуем блок юзера
-render(siteHeaderElement, new TitleUserView(), RenderPosition.BEFOREEND);
+render(siteHeaderElement, new TitleUserView(filmsModel.get()), RenderPosition.BEFOREEND);
 
 // Отрисуем блок статистики
-render(siteFooterElement, new StatisticsView(films.length), RenderPosition.BEFOREEND);
+render(siteFooterElement, new StatisticsView(filmsModel.get().length), RenderPosition.BEFOREEND);
 const movieListPresenter = new MovieListPresenter(siteMainElement, filmsModel, filterModel, commentsModel);
 const statisticsScreenPresenter = new StatisticsScreenPresenter(siteMainElement, filmsModel, movieListPresenter, pageModeModel); 
 
 new FilterPresenter(siteMainElement, filterModel, filmsModel, movieListPresenter, statisticsScreenPresenter, pageModeModel).init();
 movieListPresenter.init();
-statisticsScreenPresenter.init();

@@ -28,7 +28,7 @@ export default class Filter {
   }
 
   init() {
-    this._currentFilter = this._filterModel.getFilter();
+    this._currentFilter = this._filterModel.get();
 
     const filters = this._getFilters();
     const prevFilterComponent = this._filterComponent;
@@ -55,7 +55,16 @@ export default class Filter {
       return;
     }
 
-    this._filterModel.setFilter(UpdateType.MAJOR, filterType);
+    this._filterModel.set(UpdateType.MAJOR, filterType);
+
+    if (this._pageMode === PageMode.STATISTICS) {
+      this._pageMode = PageMode.FILMS;
+      this._pageModeModel.setMode(UpdateType.MAJOR, this._pageMode);
+      this._statisticsScreenPresenter.destroy();
+    }
+
+    this._movieListPresenter.destroy();
+    this._movieListPresenter.init();
   }
 
   _handleStatisticsClick() {
@@ -64,16 +73,11 @@ export default class Filter {
       this._statisticsScreenPresenter.init();
       this._movieListPresenter.destroy();
       this._pageModeModel.setMode(UpdateType.MAJOR, this._pageMode);
-    } else {
-      this._pageMode = PageMode.FILMS;
-      this._statisticsScreenPresenter.destroy();
-      this._movieListPresenter.init();
-      this._pageModeModel.setMode(UpdateType.MAJOR, this._pageMode);
-    }
+    } 
   }
 
   _getFilters() {
-    const films = this._filmsModel.getFilms();
+    const films = this._filmsModel.get();
 
     return [
       {

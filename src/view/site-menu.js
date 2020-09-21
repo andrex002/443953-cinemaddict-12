@@ -8,6 +8,7 @@ const createFilterItemTemplate = (filter, currentFilterType) => {
 };
 
 export const createSiteMenuTemplate = (filterItems, currentFilterType, pageMode) => {
+  console.log(currentFilterType)
   const filterItemsTemplate = filterItems.map((filter) => createFilterItemTemplate(filter, currentFilterType)).join(``);
 
   return `<nav class="main-navigation">
@@ -34,20 +35,16 @@ export default class SiteMenu extends AbstractView {
 
   _filterTypeChangeHandler(evt) {
     evt.preventDefault();
-    let id;
 
-    if (evt.target.classList.contains(`main-navigation__item-count`)) {
-      id = evt.target.parentElement.id;
-    } else {
-      id = evt.target.id;
-    }
+    let id = evt.target.classList.contains(`main-navigation__item-count`) ? evt.target.parentElement.id : evt.target.id;
+
     this._callback.filterTypeChange(id);
   }
 
   setFilterTypeChangeHandler(callback) {
     this._callback.filterTypeChange = callback;
-    const filterLinks = this.getElement().querySelectorAll(`.main-navigation__item`);
-    filterLinks.forEach((filterLink) => {
+    
+    this.getElement().querySelectorAll(`.main-navigation__item`).forEach((filterLink) => {
       filterLink.addEventListener(`click`, this._filterTypeChangeHandler);
     });
   }

@@ -1,16 +1,75 @@
-import SmartView from './smart';
-import {getWatchedFilmsCount, getFilmsDuration, definitionTopGenre, getProfileRating} from '../utils/statistics.js';
-import {StatisticPeriod} from '../const.js';
+import SmartView from './smart.js';
+import moment from 'moment';
+import Chart from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+import {StatisticPeriod, BAR_HEIGHT} from '../const.js';
+import {sortedGenres} from '../utils/statistics.js';
+import {getCurrentDate} from '../utils/common.js';
 
-const createStatisticsScreenTemplate = (films, currentPeriod = 'all-time') => {
-   const watchedFilms = films.filter((film) => film.isWatched);
-   const watchedFilmsCount = getWatchedFilmsCount(watchedFilms);
-   const filmsDuration = getFilmsDuration(watchedFilms);
-   const totalDurationHours = Math.floor(filmsDuration / 60);
-   const totalDurationMinutes = filmsDuration % 60;
-   const topGenre = definitionTopGenre(watchedFilms);
-   const rankLabel = getProfileRating(watchedFilms);
+const renderGenreChart = (statisticCtx, films) => {
+  const genres = Object.keys(sortedGenres(films));
+  const genresCount = Object.values(sortedGenres(films));
+  statisticCtx.height = BAR_HEIGHT * genres.length;
 
+  return new Chart(statisticCtx, {
+    plugins: [ChartDataLabels],
+    type: `horizontalBar`,
+    data: {
+      labels: genres,
+      datasets: [{
+        data: genresCount,
+        backgroundColor: `#ffe800`,
+        hoverBackgroundColor: `#ffe800`,
+        anchor: `start`,
+        barThickness: 24
+      }]
+    },
+    options: {
+      plugins: {
+        datalabels: {
+          font: {
+            size: 20
+          },
+          color: `#ffffff`,
+          anchor: `start`,
+          align: `start`,
+          offset: 40,
+        }
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            fontColor: `#ffffff`,
+            padding: 100,
+            fontSize: 20
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false
+          }
+        }],
+        xAxes: [{
+          ticks: {
+            display: false,
+            beginAtZero: true
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false
+          },
+        }],
+      },
+      legend: {
+        display: false
+      },
+      tooltips: {
+        enabled: false
+      }
+    }
+  });
+};
+
+const createStatisticsScreenTemplate = (watchedFilmsCount, totalDurationHours, totalDurationMinutes, topGenre, rankLabel, currentPeriod) => {
    return `<section class="statistic">
       <p class="statistic__rank">
         Your rank
@@ -51,13 +110,95 @@ const createStatisticsScreenTemplate = (films, currentPeriod = 'all-time') => {
 }
 
 export default class StatisticsScreen extends SmartView {
-   constructor(films) {
-      super();
+  constructor(watchedFilms, watchedFilmsCount, totalDurationHours, totalDurationMinutes, topGenre, rankLabel) {
+    super();
 
-      this._films = films;
-   }
+    this._watchedFilms = watchedFilms;
+    this._watchedFilmsCount = watchedFilmsCount;
+    this._totalDurationHours = totalDurationHours;
+    this._totalDurationMinutes = totalDurationMinutes;
+    this._topGenre = topGenre;
+    this._rankLabel = rankLabel;
+    this._data = {
+      watchedFilms: watchedFilms,
+      currentPeriod: StatisticPeriod.ALL_TIME
+    }
+    this._genreChart = null;
+
+    this._periodChangeHandler = this._periodChangeHandler.bind(this);
+    this._setInnerHandlers();
+    this._setChart();
+  }
 
    getTemplate() {
-      return createStatisticsScreenTemplate(this._films);
+     return createStatisticsScreenTemplate(this._watchedFilmsCount, this._totalDurationHours, this._totalDurationMinutes, this._topGenre, this._rankLabel, this._data.currentPeriod);
    }
+
+  restoreHandlers() {
+    this._setChart();
+    this._setInnerHandlers();
+  }
+
+  _setInnerHandlers() {
+    this.getElement().querySelector(`.statistic__filters`).addEventListener(`change`, this._periodChangeHandler);
+  }
+
+  _periodChangeHandler(evt) {
+    if (evt.target.classList.contains(`statistic__filters-input`)) {
+      evt.preventDefault();
+
+      const dateAWeekAgo = moment().subtract(7, `days`);
+      const dateAMonthAgo = moment().subtract(1, `month`);
+      const dateAYearAgo = moment().subtract(1, `years`);
+      
+      let update;
+      switch (evt.target.value) {
+        case StatisticPeriod.ALL_TIME:
+          update = {
+            watchedFilms: this._watchedFilms,
+            currentPeriod: StatisticPeriod.ALL_TIME
+          };
+          break;
+        case StatisticPeriod.TODAY:
+          update = {
+            watchedFilms: this._watchedFilms.filter((watchedFilm) => moment(watchedFilm.watchingDate).isSame(getCurrentDate(), `day`)),
+            currentPeriod: StatisticPeriod.TODAY
+          };
+          break;
+        case StatisticPeriod.WEEK:
+          update = {
+            watchedFilms: this._watchedFilms.filter((watchedFilm) => moment(watchedFilm.watchingDate).isBetween(dateAWeekAgo, getCurrentDate())),
+            currentPeriod: StatisticPeriod.WEEK
+          };
+          break;
+        case StatisticPeriod.MONTH:
+          update = {
+            watchedFilms: this._watchedFilms.filter((watchedFilm) => moment(watchedFilm.watchingDate).isBetween(dateAMonthAgo, getCurrentDate())),
+            currentPeriod: StatisticPeriod.MONTH
+          };
+          console.log(update)
+          break;
+        case StatisticPeriod.YEAR:
+          update = {
+            watchedFilms: this._watchedFilms.filter((watchedFilm) => moment(watchedFilm.watchingDate).isBetween(dateAYearAgo, getCurrentDate())),
+            currentPeriod: StatisticPeriod.YEAR
+          };
+          break;
+      }
+      console.log(update);
+
+      this.updateData(update);
+      this._setChart();
+    }
+  }
+
+  _setChart() {
+    if (this._genreChart !== null) {
+      this._genreChart = null;
+    }
+
+    const statisticCtx = this.getElement().querySelector(`.statistic__chart`);
+
+    this._genreChart = renderGenreChart(statisticCtx, this._watchedFilms);
+  }
 }

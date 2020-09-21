@@ -23,3 +23,10 @@ export const getRandomListElements = (arr) => {
 export const generateDateInIsoFormat = (date) => new Date(date).toISOString();
 
 export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
+export const getCurrentDate = () => {
+  const currentDate = new Date();
+  currentDate.setHours(23, 59, 59, 999);
+
+  return new Date(currentDate);
+};

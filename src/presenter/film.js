@@ -87,10 +87,6 @@ export default class Film {
     remove(this._filmDetailsComponent);
   }
 
-  // _handleCommentSubmit() {
-  //   this._changeData(UserAction.ADD_COMMENT, UpdateType.PATCH, comment);
-  // }
-
   _handleFavoriteClick() {
     this._changeData(
         UserAction.UPDATE_FILM,
