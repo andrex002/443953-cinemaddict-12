@@ -54,6 +54,40 @@ export default class MovieList {
     this._renderExtraCards();
   }
 
+  destroy() {
+    this._clearFilmList({ resetRenderedFilmsCount: true, resetSortType: true });
+
+    remove(this._contentSectionComponent);
+    remove(this._filmsListExtraTopRatedComponent);
+    remove(this._filmsListExtraMostCommentedComponent);
+
+    this._filmsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
+  }
+
+  _clearFilmList({ resetRenderedFilmsCount = false, resetSortType = false } = {}) {
+    const filmsCount = this._getFilms().length;
+
+    Object
+      .values(this._filmPresenter)
+      .forEach((presenter) => presenter.destroy());
+    this._filmPresenter = {};
+
+    remove(this._sortingComponent);
+    remove(this._noFilmsComponent);
+    remove(this._loadMoreButtonComponent);
+
+    if (resetRenderedFilmsCount) {
+      this._renderedFilmCount = NUMBER_FILMS_PER_STEP;
+    } else {
+      this._renderedFilmCount = Math.min(filmsCount, this._renderedFilmCount);
+    }
+
+    if (resetSortType) {
+      this._currentSortType = SortType.DEFAULT;
+    }
+  }
+
   _getFilms() {
     const filterType = this._filterModel.getFilter();
     const films = this._filmsModel.getFilms();
@@ -84,6 +118,7 @@ export default class MovieList {
     this._initUpdatedFilm(updatedFilm, this._filmPresenterMostCommented);
     this._initUpdatedFilm(updatedFilm, this._filmPresenterTopRated);
   }
+
   _handleViewAction(actionType, updateType, update, updateComment) {
     switch (actionType) {
       case UserAction.UPDATE_FILM:
