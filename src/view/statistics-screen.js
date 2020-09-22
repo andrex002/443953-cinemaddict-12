@@ -1,10 +1,8 @@
 import SmartView from './smart.js';
-import moment from 'moment';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {StatisticPeriod, BAR_HEIGHT} from '../const.js';
 import {sortedGenres} from '../utils/statistics.js';
-import {getCurrentDate} from '../utils/common.js';
 
 const renderGenreChart = (statisticCtx, films) => {
   const genres = Object.keys(sortedGenres(films));
@@ -70,47 +68,47 @@ const renderGenreChart = (statisticCtx, films) => {
 };
 
 const createStatisticsScreenTemplate = (watchedFilmsCount, totalDurationHours, totalDurationMinutes, topGenre, rankLabel, currentPeriod) => {
-   return `<section class="statistic">
-      <p class="statistic__rank">
-        Your rank
-        <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-        <span class="statistic__rank-label">${rankLabel}</span>
-      </p>
-      <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
-        <p class="statistic__filters-description">Show stats:</p>
-        <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-all-time" value="all-time" ${currentPeriod === StatisticPeriod.ALL_TIME ? `checked` : ``}>
-        <label for="statistic-all-time" class="statistic__filters-label">All time</label>
-        <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-today" value="today" ${currentPeriod === StatisticPeriod.TODAY ? `checked` : ``}>
-        <label for="statistic-today" class="statistic__filters-label">Today</label>
-        <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-week" value="week" ${currentPeriod === StatisticPeriod.WEEK ? `checked` : ``}>
-        <label for="statistic-week" class="statistic__filters-label">Week</label>
-        <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-month" value="month" ${currentPeriod === StatisticPeriod.MONTH ? `checked` : ``}>
-        <label for="statistic-month" class="statistic__filters-label">Month</label>
-        <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="year" ${currentPeriod === StatisticPeriod.YEAR ? `checked` : ``}>
-        <label for="statistic-year" class="statistic__filters-label">Year</label>
-      </form>
-      <ul class="statistic__text-list">
-        <li class="statistic__text-item">
-          <h4 class="statistic__item-title">You watched</h4>
-          <p class="statistic__item-text">${watchedFilmsCount} <span class="statistic__item-description">movies</span></p>
-        </li>
-        <li class="statistic__text-item">
-          <h4 class="statistic__item-title">Total duration</h4>
-          <p class="statistic__item-text">${totalDurationHours} <span class="statistic__item-description">h</span> ${totalDurationMinutes} <span class="statistic__item-description">m</span></p>
-        </li>
-        <li class="statistic__text-item">
-          <h4 class="statistic__item-title">Top genre</h4>
-          <p class="statistic__item-text">${topGenre}</p>
-        </li>
-      </ul>
-      <div class="statistic__chart-wrap">
-        <canvas class="statistic__chart" width="1000"></canvas>
-      </div>
-    </section>`;
-}
+  return `<section class="statistic">
+    <p class="statistic__rank">
+      Your rank
+      <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
+      <span class="statistic__rank-label">${rankLabel}</span>
+    </p>
+    <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
+      <p class="statistic__filters-description">Show stats:</p>
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-all-time" value="all-time" ${currentPeriod === StatisticPeriod.ALL_TIME ? `checked` : ``}>
+      <label for="statistic-all-time" class="statistic__filters-label">All time</label>
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-today" value="today" ${currentPeriod === StatisticPeriod.TODAY ? `checked` : ``}>
+      <label for="statistic-today" class="statistic__filters-label">Today</label>
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-week" value="week" ${currentPeriod === StatisticPeriod.WEEK ? `checked` : ``}>
+      <label for="statistic-week" class="statistic__filters-label">Week</label>
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-month" value="month" ${currentPeriod === StatisticPeriod.MONTH ? `checked` : ``}>
+      <label for="statistic-month" class="statistic__filters-label">Month</label>
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="year" ${currentPeriod === StatisticPeriod.YEAR ? `checked` : ``}>
+      <label for="statistic-year" class="statistic__filters-label">Year</label>
+    </form>
+    <ul class="statistic__text-list">
+      <li class="statistic__text-item">
+        <h4 class="statistic__item-title">You watched</h4>
+        <p class="statistic__item-text">${watchedFilmsCount} <span class="statistic__item-description">movies</span></p>
+      </li>
+      <li class="statistic__text-item">
+        <h4 class="statistic__item-title">Total duration</h4>
+        <p class="statistic__item-text">${totalDurationHours} <span class="statistic__item-description">h</span> ${totalDurationMinutes} <span class="statistic__item-description">m</span></p>
+      </li>
+      <li class="statistic__text-item">
+        <h4 class="statistic__item-title">Top genre</h4>
+        <p class="statistic__item-text">${topGenre}</p>
+      </li>
+    </ul>
+    <div class="statistic__chart-wrap">
+      <canvas class="statistic__chart" width="1000"></canvas>
+    </div>
+  </section>`;
+};
 
 export default class StatisticsScreen extends SmartView {
-  constructor(watchedFilms, watchedFilmsCount, totalDurationHours, totalDurationMinutes, topGenre, rankLabel) {
+  constructor({watchedFilms, watchedFilmsCount, totalDurationHours, totalDurationMinutes, topGenre, rankLabel, currentPeriod}) {
     super();
 
     this._watchedFilms = watchedFilms;
@@ -119,77 +117,18 @@ export default class StatisticsScreen extends SmartView {
     this._totalDurationMinutes = totalDurationMinutes;
     this._topGenre = topGenre;
     this._rankLabel = rankLabel;
-    this._data = {
-      watchedFilms: watchedFilms,
-      currentPeriod: StatisticPeriod.ALL_TIME
-    }
+    this._currentPeriod = currentPeriod;
     this._genreChart = null;
 
-    this._periodChangeHandler = this._periodChangeHandler.bind(this);
-    this._setInnerHandlers();
     this._setChart();
   }
 
-   getTemplate() {
-     return createStatisticsScreenTemplate(this._watchedFilmsCount, this._totalDurationHours, this._totalDurationMinutes, this._topGenre, this._rankLabel, this._data.currentPeriod);
-   }
-
-  restoreHandlers() {
-    this._setChart();
-    this._setInnerHandlers();
+  getTemplate() {
+    return createStatisticsScreenTemplate(this._watchedFilmsCount, this._totalDurationHours, this._totalDurationMinutes, this._topGenre, this._rankLabel, this._currentPeriod);
   }
 
-  _setInnerHandlers() {
-    this.getElement().querySelector(`.statistic__filters`).addEventListener(`change`, this._periodChangeHandler);
-  }
-
-  _periodChangeHandler(evt) {
-    if (evt.target.classList.contains(`statistic__filters-input`)) {
-      evt.preventDefault();
-
-      const dateAWeekAgo = moment().subtract(7, `days`);
-      const dateAMonthAgo = moment().subtract(1, `month`);
-      const dateAYearAgo = moment().subtract(1, `years`);
-      
-      let update;
-      switch (evt.target.value) {
-        case StatisticPeriod.ALL_TIME:
-          update = {
-            watchedFilms: this._watchedFilms,
-            currentPeriod: StatisticPeriod.ALL_TIME
-          };
-          break;
-        case StatisticPeriod.TODAY:
-          update = {
-            watchedFilms: this._watchedFilms.filter((watchedFilm) => moment(watchedFilm.watchingDate).isSame(getCurrentDate(), `day`)),
-            currentPeriod: StatisticPeriod.TODAY
-          };
-          break;
-        case StatisticPeriod.WEEK:
-          update = {
-            watchedFilms: this._watchedFilms.filter((watchedFilm) => moment(watchedFilm.watchingDate).isBetween(dateAWeekAgo, getCurrentDate())),
-            currentPeriod: StatisticPeriod.WEEK
-          };
-          break;
-        case StatisticPeriod.MONTH:
-          update = {
-            watchedFilms: this._watchedFilms.filter((watchedFilm) => moment(watchedFilm.watchingDate).isBetween(dateAMonthAgo, getCurrentDate())),
-            currentPeriod: StatisticPeriod.MONTH
-          };
-          console.log(update)
-          break;
-        case StatisticPeriod.YEAR:
-          update = {
-            watchedFilms: this._watchedFilms.filter((watchedFilm) => moment(watchedFilm.watchingDate).isBetween(dateAYearAgo, getCurrentDate())),
-            currentPeriod: StatisticPeriod.YEAR
-          };
-          break;
-      }
-      console.log(update);
-
-      this.updateData(update);
-      this._setChart();
-    }
+  setStatisticsFilterHandler(callback) {
+    this.getElement().querySelector(`.statistic__filters`).addEventListener(`change`, callback);
   }
 
   _setChart() {

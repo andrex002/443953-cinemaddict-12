@@ -33,8 +33,8 @@ const getBoolean = () => Boolean(getRandomInteger(0, 1));
 
 export const generateMovieCard = () => {
   const isWatchedFilm = getBoolean();
-  // const watchingDateFilm = isWatchedFilm ? generateDateInIsoFormat(getRandomInteger(0, Date.now())) : ``;
-  const watchingDateFilm = isWatchedFilm ? getRandomInteger(0, Date.now()) : ``;
+  const watchingDateFilm = isWatchedFilm ? getRandomInteger(new Date().setMonth(new Date().getMonth() - 2), Date.now()) : ``;
+
   return {
     id: generateId(),
     title: generateTitle(),

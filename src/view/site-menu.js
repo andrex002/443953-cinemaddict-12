@@ -1,15 +1,14 @@
 import AbstractView from "./abstract.js";
-import { PageMode } from "../const.js";
+import {PageMode} from "../const.js";
 
-const createFilterItemTemplate = (filter, currentFilterType) => {
+const createFilterItemTemplate = (filter, currentFilterType, pageMode) => {
   const {type, name, count} = filter;
 
-  return `<a href="#${name}" id="${type}" class="main-navigation__item ${type === currentFilterType ? `main-navigation__item--active` : ``}">${name} ${type !== `all` ? `<span class="main-navigation__item-count">${count}</span>` : ``}</a>`;
+  return `<a href="#${name}" id="${type}" class="main-navigation__item ${type === currentFilterType && pageMode !== PageMode.STATISTICS ? `main-navigation__item--active` : ``}">${name} ${type !== `all` ? `<span class="main-navigation__item-count">${count}</span>` : ``}</a>`;
 };
 
 export const createSiteMenuTemplate = (filterItems, currentFilterType, pageMode) => {
-  console.log(currentFilterType)
-  const filterItemsTemplate = filterItems.map((filter) => createFilterItemTemplate(filter, currentFilterType)).join(``);
+  const filterItemsTemplate = filterItems.map((filter) => createFilterItemTemplate(filter, currentFilterType, pageMode)).join(``);
 
   return `<nav class="main-navigation">
       <div class="main-navigation__items">
@@ -43,7 +42,7 @@ export default class SiteMenu extends AbstractView {
 
   setFilterTypeChangeHandler(callback) {
     this._callback.filterTypeChange = callback;
-    
+
     this.getElement().querySelectorAll(`.main-navigation__item`).forEach((filterLink) => {
       filterLink.addEventListener(`click`, this._filterTypeChangeHandler);
     });

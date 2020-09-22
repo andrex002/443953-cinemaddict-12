@@ -1,8 +1,6 @@
 import AbstractView from "./abstract.js";
 import {getProfileRating} from "../utils/statistics.js";
 
-
-
 const createTitleUserTemplate = (films) => {
   return (
     `<section class="header__profile profile">

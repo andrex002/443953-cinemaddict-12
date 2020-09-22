@@ -51,7 +51,7 @@ export default class Filter {
   }
 
   _handleFilterTypeChange(filterType) {
-    if (this._currentFilter === filterType) {
+    if (this._currentFilter === filterType && this._pageMode !== PageMode.STATISTICS) {
       return;
     }
 
@@ -73,7 +73,7 @@ export default class Filter {
       this._statisticsScreenPresenter.init();
       this._movieListPresenter.destroy();
       this._pageModeModel.setMode(UpdateType.MAJOR, this._pageMode);
-    } 
+    }
   }
 
   _getFilters() {

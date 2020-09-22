@@ -1,5 +1,5 @@
 import {generateMovieCard} from "./mock/movie-card.js";
-import { generateComments } from "./mock/comment.js";
+import {generateComments} from "./mock/comment.js";
 import TitleUserView from "./view/title-user.js";
 import StatisticsView from "./view/statistics.js";
 import StatisticsScreenPresenter from "./presenter/statistics-screen.js";
@@ -9,7 +9,7 @@ import FilmsModel from "./model/films.js";
 import CommentsModel from "./model/comments.js";
 import FilterModel from "./model/filter.js";
 import PageModeModel from "./model/page-mode.js";
-import { render, RenderPosition } from "./utils/render.js";
+import {render, RenderPosition} from "./utils/render.js";
 
 
 const NUMBER_FILMS = 22;
@@ -41,7 +41,7 @@ render(siteHeaderElement, new TitleUserView(filmsModel.get()), RenderPosition.BE
 // Отрисуем блок статистики
 render(siteFooterElement, new StatisticsView(filmsModel.get().length), RenderPosition.BEFOREEND);
 const movieListPresenter = new MovieListPresenter(siteMainElement, filmsModel, filterModel, commentsModel);
-const statisticsScreenPresenter = new StatisticsScreenPresenter(siteMainElement, filmsModel, movieListPresenter, pageModeModel); 
+const statisticsScreenPresenter = new StatisticsScreenPresenter(siteMainElement, filmsModel, movieListPresenter, pageModeModel);
 
 new FilterPresenter(siteMainElement, filterModel, filmsModel, movieListPresenter, statisticsScreenPresenter, pageModeModel).init();
 movieListPresenter.init();

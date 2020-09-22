@@ -57,7 +57,7 @@ export default class MovieList {
   }
 
   destroy() {
-    this._clearMainContent({ resetRenderedFilmsCount: true, resetSortType: true });
+    this._clearMainContent({resetRenderedFilmsCount: true, resetSortType: true});
 
     remove(this._contentSectionComponent);
     remove(this._filmsListExtraTopRatedComponent);
