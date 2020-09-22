@@ -32,6 +32,9 @@ const generateRating = () => getRandomInteger(0, 100) / 10;
 const getBoolean = () => Boolean(getRandomInteger(0, 1));
 
 export const generateMovieCard = () => {
+  const isWatchedFilm = getBoolean();
+  const watchingDateFilm = isWatchedFilm ? getRandomInteger(new Date().setMonth(new Date().getMonth() - 2), Date.now()) : ``;
+
   return {
     id: generateId(),
     title: generateTitle(),
@@ -50,7 +53,8 @@ export const generateMovieCard = () => {
     genres: generateGenres(),
     ageRating: `${getRandomInteger(0, 18)}+`,
     isWatchlist: getBoolean(),
-    isWatched: getBoolean(),
+    isWatched: isWatchedFilm,
+    watchingDate: watchingDateFilm,
     isFavorite: getBoolean(),
   };
 };

@@ -41,22 +41,35 @@ export default class MovieList {
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
 
+    this._filmsListElement = null;
+    this._filmsListContainer = null;
+  }
+
+  init() {
     this._filmsModel.addObserver(this._handleModelEvent);
     this._commentsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
 
     this._filmsListElement = this._contentSectionComponent.getElement().querySelector(`.films-list`);
     this._filmsListContainer = this._filmsListElement.querySelector(`.films-list__container`);
-  }
-
-  init() {
     this._renderMainContent();
     this._renderExtraCards();
   }
 
+  destroy() {
+    this._clearMainContent({resetRenderedFilmsCount: true, resetSortType: true});
+
+    remove(this._contentSectionComponent);
+    remove(this._filmsListExtraTopRatedComponent);
+    remove(this._filmsListExtraMostCommentedComponent);
+
+    this._filmsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
+  }
+
   _getFilms() {
-    const filterType = this._filterModel.getFilter();
-    const films = this._filmsModel.getFilms();
+    const filterType = this._filterModel.get();
+    const films = this._filmsModel.get();
     const filtredFilms = filter[filterType](films);
 
     switch (this._currentSortType) {
@@ -84,14 +97,15 @@ export default class MovieList {
     this._initUpdatedFilm(updatedFilm, this._filmPresenterMostCommented);
     this._initUpdatedFilm(updatedFilm, this._filmPresenterTopRated);
   }
+
   _handleViewAction(actionType, updateType, update, updateComment) {
     switch (actionType) {
       case UserAction.UPDATE_FILM:
-        this._filmsModel.updateFilm(updateType, update);
+        this._filmsModel.update(updateType, update);
         break;
       case UserAction.ADD_COMMENT:
         this._commentsModel.add(updateType, updateComment);
-        this._filmsModel.updateFilm(
+        this._filmsModel.update(
             updateType,
             Object.assign(
                 {},
@@ -103,7 +117,7 @@ export default class MovieList {
       case UserAction.DELETE_COMMENT:
         this._commentsModel.delete(updateType, updateComment);
         update.comments = update.comments.filter((comment) => comment !== updateComment.id);
-        this._filmsModel.updateFilm(
+        this._filmsModel.update(
             updateType,
             Object.assign(
                 {},
@@ -198,8 +212,15 @@ export default class MovieList {
   _clearMainContent({resetRenderedFilmCount = false, resetSortType = false} = {}) {
     const filmCount = this._getFilms().length;
 
-    Object.values(this._filmPresenter).forEach((presenter) => presenter.destroy());
-    this._taskPresenter = {};
+    [
+      ...Object.values(this._filmPresenter),
+      ...Object.values(this._filmPresenterTopRated),
+      ...Object.values(this._filmPresenterMostCommented),
+    ].forEach((presenter) => presenter.destroy());
+
+    this._filmPresenter = {};
+    this._filmPresenterTopRated = {};
+    this._filmPresenterMostCommented = {};
 
     remove(this._sortingComponent);
     remove(this._noFilmsComponent);

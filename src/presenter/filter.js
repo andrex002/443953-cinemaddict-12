@@ -1,13 +1,16 @@
 import SiteMenuView from "../view/site-menu.js";
 import {render, RenderPosition, replace, remove} from "../utils/render.js";
 import {filter} from "../utils/filter.js";
-import {FilterType, UpdateType} from "../const.js";
+import {FilterType, UpdateType, PageMode} from "../const.js";
 
 export default class Filter {
-  constructor(filterContainer, filterModel, filmsModel) {
+  constructor(filterContainer, filterModel, filmsModel, movieListPresenter, statisticsScreenPresenter, pageModeModel) {
     this._filterContainer = filterContainer;
     this._filterModel = filterModel;
     this._filmsModel = filmsModel;
+    this._movieListPresenter = movieListPresenter;
+    this._statisticsScreenPresenter = statisticsScreenPresenter;
+    this._pageModeModel = pageModeModel;
     this._currentFilter = null;
 
     this._currentFilter = null;
@@ -15,19 +18,24 @@ export default class Filter {
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
+    this._handleStatisticsClick = this._handleStatisticsClick.bind(this);
 
     this._filmsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
+    this._pageModeModel.addObserver(this._handleModelEvent);
+
+    this._pageMode = this._pageModeModel.getMode();
   }
 
   init() {
-    this._currentFilter = this._filterModel.getFilter();
+    this._currentFilter = this._filterModel.get();
 
     const filters = this._getFilters();
     const prevFilterComponent = this._filterComponent;
 
-    this._filterComponent = new SiteMenuView(filters, this._currentFilter);
+    this._filterComponent = new SiteMenuView(filters, this._currentFilter, this._pageMode);
     this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
+    this._filterComponent.setStatisticsClickHandler(this._handleStatisticsClick);
 
     if (prevFilterComponent === null) {
       render(this._filterContainer, this._filterComponent, RenderPosition.BEFOREEND);
@@ -43,15 +51,33 @@ export default class Filter {
   }
 
   _handleFilterTypeChange(filterType) {
-    if (this._currentFilter === filterType) {
+    if (this._currentFilter === filterType && this._pageMode !== PageMode.STATISTICS) {
       return;
     }
 
-    this._filterModel.setFilter(UpdateType.MAJOR, filterType);
+    this._filterModel.set(UpdateType.MAJOR, filterType);
+
+    if (this._pageMode === PageMode.STATISTICS) {
+      this._pageMode = PageMode.FILMS;
+      this._pageModeModel.setMode(UpdateType.MAJOR, this._pageMode);
+      this._statisticsScreenPresenter.destroy();
+    }
+
+    this._movieListPresenter.destroy();
+    this._movieListPresenter.init();
+  }
+
+  _handleStatisticsClick() {
+    if (this._pageMode === PageMode.FILMS) {
+      this._pageMode = PageMode.STATISTICS;
+      this._statisticsScreenPresenter.init();
+      this._movieListPresenter.destroy();
+      this._pageModeModel.setMode(UpdateType.MAJOR, this._pageMode);
+    }
   }
 
   _getFilters() {
-    const films = this._filmsModel.getFilms();
+    const films = this._filmsModel.get();
 
     return [
       {
