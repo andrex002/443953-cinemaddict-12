@@ -15,7 +15,7 @@ export default class Comment {
     this._comment = comment;
     this._commentComponent = new DetailedCommentView(this._comment);
     this._commentComponent.setCommentDeleteClickHandler(this._handleCommentDeleteClick);
-    console.log(555)
+
     render(this._commentsContainer, this._commentComponent, RenderPosition.BEFOREEND);
   }
 

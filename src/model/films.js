@@ -35,30 +35,30 @@ export default class Films extends Observer {
 
   static adaptToClient(film) {
     const adaptedFilm = Object.assign(
-      {},
-      film,
-      {
-        title: film.film_info.title,
-        originalTitle: film.film_info.alternative_title,
-        poster: film.film_info.poster,
-        rating: film.film_info.total_rating,
-        yearOfProduction: moment(film.film_info.release.date).format(`YYYY`),
-        duration: film.film_info.runtime,
-        description: film.film_info.description,
-        producer: film.film_info.director,
-        screenwriters: film.film_info.writers,
-        actors: film.film_info.actors,
-        dateOfRelease: film.film_info.release.date,
-        country: film.film_info.release.release_country,
-        genres: film.film_info.genre,
-        ageRating: film.film_info.age_rating,
-        isWatchlist: film.user_details.watchlist,
-        isWatched: film.user_details.already_watched,
-        watchingDate: film.user_details.watching_date,
-        isFavorite: film.user_details.favorite
-      }
+        {},
+        film,
+        {
+          title: film.film_info.title,
+          originalTitle: film.film_info.alternative_title,
+          poster: film.film_info.poster,
+          rating: film.film_info.total_rating,
+          yearOfProduction: moment(film.film_info.release.date).format(`YYYY`),
+          duration: film.film_info.runtime,
+          description: film.film_info.description,
+          producer: film.film_info.director,
+          screenwriters: film.film_info.writers,
+          actors: film.film_info.actors,
+          dateOfRelease: film.film_info.release.date,
+          country: film.film_info.release.release_country,
+          genres: film.film_info.genre,
+          ageRating: film.film_info.age_rating,
+          isWatchlist: film.user_details.watchlist,
+          isWatched: film.user_details.already_watched,
+          watchingDate: film.user_details.watching_date,
+          isFavorite: film.user_details.favorite
+        }
     );
-    
+
     delete adaptedFilm.film_info.title;
     delete adaptedFilm.film_info.alternative_title;
     delete adaptedFilm.film_info.poster;
@@ -80,33 +80,33 @@ export default class Films extends Observer {
 
   static adaptToServer(film) {
     const adaptedFilm = Object.assign(
-      {},
-      film,
-      {
-        film_info: {
-          title: film.title,
-          alternative_title: film.originalTitle,
-          poster: film.poster,
-          total_rating: film.rating,
-          runtime: film.duration,
-          description: film.description,
-          director: film.producer,
-          writers: film.screenwriters,
-          actors: film.actors,
-          genre: film.genres,
-          age_rating: film.ageRating,
-          release: {
-            date: film.dateOfRelease,
-            release_country: film.country
-          } 
-        },
-        user_details: {
-          watchlist: film.isWatchlist,
-          already_watched: film.isWatched,
-          watching_date: film.watchingDate,
-          favorite: film.isFavorite
+        {},
+        film,
+        {
+          film_info: {
+            title: film.title,
+            alternative_title: film.originalTitle,
+            poster: film.poster,
+            total_rating: film.rating,
+            runtime: film.duration,
+            description: film.description,
+            director: film.producer,
+            writers: film.screenwriters,
+            actors: film.actors,
+            genre: film.genres,
+            age_rating: film.ageRating,
+            release: {
+              date: film.dateOfRelease,
+              release_country: film.country
+            }
+          },
+          user_details: {
+            watchlist: film.isWatchlist,
+            already_watched: film.isWatched,
+            watching_date: film.watchingDate,
+            favorite: film.isFavorite
+          }
         }
-      }
     );
 
     delete adaptedFilm.title;

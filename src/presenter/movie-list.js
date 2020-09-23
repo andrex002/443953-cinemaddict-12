@@ -44,7 +44,7 @@ export default class MovieList {
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
-    this._renderNoFilms = this._renderNoFilms.bind(this)
+    this._renderNoFilms = this._renderNoFilms.bind(this);
 
     this._filmsListElement = null;
     this._filmsListContainer = null;
@@ -57,8 +57,9 @@ export default class MovieList {
 
     this._filmsListElement = this._contentSectionComponent.getElement().querySelector(`.films-list`);
     this._filmsListContainer = this._filmsListElement.querySelector(`.films-list__container`);
-    
-      this._renderMainContent();
+
+    this._renderMainContent();
+    this._renderExtraCards();
   }
 
   destroy() {
@@ -103,8 +104,7 @@ export default class MovieList {
     this._initUpdatedFilm(updatedFilm, this._filmPresenterTopRated);
   }
 
-  _handleViewAction(actionType, updateType, update, updateComment) {
-    console.log(updateComment)
+  _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_FILM:
         this._api.updateFilm(update).then((response) => {
@@ -112,47 +112,14 @@ export default class MovieList {
         });
         break;
       case UserAction.ADD_COMMENT:
-        // this._api.updateFilm(update).then((response) => {
-        //   this._filmsModel.update(updateType, response);
-        // });
-        // this._api.addComment(update.id, updateComment).then((response) => {
-        //   this._commentsModel.add(updateType, response);
-        // });
-
-        console.log(updateComment)
-        this._api.addComment(update.id, updateComment).then((response) => {
-          console.log(response)
-          this._commentsModel.set(response.comments);
-          // this._filmsModel.update(updateType, response.movie);
-          // this._commentListPresenter.init(this._commentsModel.get()))
-          console.log(this._commentsModel)
+        this._api.updateFilm(update).then((response) => {
+          this._filmsModel.update(updateType, response);
         });
-        debugger;
-        // this._commentsModel.add(updateType, updateComment);
-        // this._filmsModel.update(
-        //     updateType,
-        //     Object.assign(
-        //         {},
-        //         update,
-        //         {comments: [updateComment.id, ...update.comments]}
-        //     )
-        // );
         break;
       case UserAction.DELETE_COMMENT:
-        this._commentsModel.delete(updateType, updateComment);
-        this._api.deleteComment(updateComment).then(() => {
-          this._commentsModel.delete(updateType, updateComment);
-        })
-
-        // update.comments = update.comments.filter((comment) => comment !== updateComment.id);
-        // this._filmsModel.update(
-        //     updateType,
-        //     Object.assign(
-        //         {},
-        //         update,
-        //         {comments: update.comments}
-        //     )
-        // );
+        this._api.updateFilm(update).then((response) => {
+          this._filmsModel.update(updateType, response);
+        });
         break;
     }
   }
@@ -194,10 +161,10 @@ export default class MovieList {
 
   _renderSort() {
     if (this._sortingComponent !== null) {
-      
+
       this._sortingComponent = null;
     }
-    
+
     this._sortingComponent = new SortView(this._currentSortType);
     this._sortingComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
 
@@ -307,11 +274,11 @@ export default class MovieList {
     if (isNeedSort) {
       this._renderSort();
     }
-    
+
     render(this._movieListContainer, this._contentSectionComponent, RenderPosition.BEFOREEND);
 
     if (this._isLoading) {
-      this._renderLoading()
+      this._renderLoading();
       return;
     }
 
@@ -327,6 +294,5 @@ export default class MovieList {
     if (filmCount > this._renderedFilmCount) {
       this._renderLoadMoreButton();
     }
-    
   }
 }

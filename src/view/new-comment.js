@@ -1,6 +1,4 @@
 import SmartView from './smart';
-import {generateId} from '../utils/common.js';
-import {formatCommentDate} from '../utils/films.js';
 import {generateDateInIsoFormat} from '../utils/common.js';
 
 const BLANK_COMMENT = {
@@ -58,9 +56,7 @@ export default class NewComment extends SmartView {
         {},
         this._data,
         {
-          // id: generateId(),
           author: `AndreX`,
-          // date: generateDateInIsoFormat(Date.now())
         }
     );
   }
