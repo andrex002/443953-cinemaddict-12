@@ -46,7 +46,9 @@ api.getFilms().then((films) => {
   filmsModel.set(UpdateType.INIT, films);
   render(siteHeaderElement, new TitleUserView(filmsModel.get()), RenderPosition.BEFOREEND);
   render(siteFooterElement, new StatisticsView(filmsModel.get().length), RenderPosition.BEFOREEND);
+  console.log(filmsModel.get())
 })
+
 .catch(() => {
   filmsModel.set(UpdateType.INIT, []);
   render(siteHeaderElement, new TitleUserView(filmsModel.get()), RenderPosition.BEFOREEND);

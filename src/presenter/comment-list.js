@@ -19,6 +19,7 @@ export default class CommentList {
   init(comments) {
     this._comments = comments;
     this._commentsModel.set(this._comments); //
+    console.log(this._commentsModel)
     this.renderCommentsList();
 
     this._newCommentComponent = new NewCommentView();
@@ -37,18 +38,26 @@ export default class CommentList {
   }
 
   _handleCommentSubmit() {
-    debugger;
-    this._commentsModel.add(UpdateType.PATCH, this._newCommentComponent.getNewComment());
+    // debugger;
+    console.log(this._newCommentComponent.getNewComment())
+    // this._commentsModel.add(UpdateType.PATCH, this._newCommentComponent.getNewComment());
+    console.log(this._commentsModel)
+    console.log(this._film)
+    console.log(this._commentsModel.get())
+
     this._changeData(
       UserAction.ADD_COMMENT,
       UpdateType.PATCH,
-      Object.assign(
-        {},
-        this._film,
-        {
-          comments: this._commentsModel.get()
-        }
-      )
+      this._film
+      // Object.assign(
+      //   {},
+      //   this._film,
+      //   {
+      //     comments: this._commentsModel.get()
+      //   }
+      // )
+      ,
+      this._newCommentComponent.getNewComment()
         // this._film,
         // this._newCommentComponent.getNewComment()
     );

@@ -33,6 +33,7 @@ export default class Film {
 
   init(film) {
     this._film = film;
+
     this._commentsModel.set(this._film.comments);
     const prevFilmCardComponent = this._filmCardComponent;
     const prevFilmDetailsComponent = this._filmDetailsComponent;
@@ -75,7 +76,7 @@ export default class Film {
     this._newCommentContainer = this._filmDetailsComponent.getElement().querySelector(`.film-details__comments-wrap`);
 
     this._commentListPresenter = new CommentListPresenter(this._commentsContainer, this._newCommentContainer, this._film, this._changeData, this._commentsModel);
-
+    // debugger;
     this._api.getComments(this._film.id).then((comments) => this._commentListPresenter.init(comments)); //
     // this._commentListPresenter.init(this._commentsModel.get(this._film.comments));
   }

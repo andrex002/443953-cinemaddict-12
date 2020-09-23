@@ -1,34 +1,35 @@
 import SmartView from './smart';
 import {generateId} from '../utils/common.js';
 import {formatCommentDate} from '../utils/films.js';
+import {generateDateInIsoFormat} from '../utils/common.js';
 
 const BLANK_COMMENT = {
-  emoji: `smile`,
-  text: ``
+  emotion: `smile`,
+  comment: ``
 };
 
-const createNewCommentTemplate = ({emoji, text}) => {
+const createNewCommentTemplate = ({emotion, comment}) => {
   return `<div class="film-details__new-comment">
     <div class="film-details__add-emoji-label">
-      ${emoji ? `<img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">` : ``}
+      ${emotion ? `<img src="images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">` : ``}
     </div>
     <label class="film-details__comment-label">
-      <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${text}</textarea>
+      <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${comment}</textarea>
     </label>
     <div class="film-details__emoji-list">
-      <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile" ${emoji === `smile` ? `checked` : ``}>
+      <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile" ${emotion === `smile` ? `checked` : ``}>
       <label class="film-details__emoji-label" for="emoji-smile">
         <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
       </label>
-      <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping" ${emoji === `sleeping` ? `checked` : ``}>
+      <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping" ${emotion === `sleeping` ? `checked` : ``}>
       <label class="film-details__emoji-label" for="emoji-sleeping">
         <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
       </label>
-      <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke" ${emoji === `puke` ? `checked` : ``}>
+      <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke" ${emotion === `puke` ? `checked` : ``}>
       <label class="film-details__emoji-label" for="emoji-puke">
         <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
       </label>
-      <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry" ${emoji === `angry` ? `checked` : ``}>
+      <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry" ${emotion === `angry` ? `checked` : ``}>
       <label class="film-details__emoji-label" for="emoji-angry">
         <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
       </label>
@@ -57,9 +58,9 @@ export default class NewComment extends SmartView {
         {},
         this._data,
         {
-          id: generateId(),
+          // id: generateId(),
           author: `AndreX`,
-          date: formatCommentDate(Date.now())
+          // date: generateDateInIsoFormat(Date.now())
         }
     );
   }
@@ -77,13 +78,14 @@ export default class NewComment extends SmartView {
   _commentInputHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      text: evt.target.value
+      comment: evt.target.value,
+      date: generateDateInIsoFormat(Date.now())
     }, true);
   }
   _emojiClickHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      emoji: evt.target.value
+      emotion: evt.target.value
     });
   }
 

@@ -104,6 +104,7 @@ export default class MovieList {
   }
 
   _handleViewAction(actionType, updateType, update, updateComment) {
+    console.log(updateComment)
     switch (actionType) {
       case UserAction.UPDATE_FILM:
         this._api.updateFilm(update).then((response) => {
@@ -111,8 +112,22 @@ export default class MovieList {
         });
         break;
       case UserAction.ADD_COMMENT:
-        this._filmsModel.update(updateType, update);
-        console.log(update)
+        // this._api.updateFilm(update).then((response) => {
+        //   this._filmsModel.update(updateType, response);
+        // });
+        // this._api.addComment(update.id, updateComment).then((response) => {
+        //   this._commentsModel.add(updateType, response);
+        // });
+
+        console.log(updateComment)
+        this._api.addComment(update.id, updateComment).then((response) => {
+          console.log(response)
+          this._commentsModel.set(response.comments);
+          // this._filmsModel.update(updateType, response.movie);
+          // this._commentListPresenter.init(this._commentsModel.get()))
+          console.log(this._commentsModel)
+        });
+        debugger;
         // this._commentsModel.add(updateType, updateComment);
         // this._filmsModel.update(
         //     updateType,
@@ -125,15 +140,19 @@ export default class MovieList {
         break;
       case UserAction.DELETE_COMMENT:
         this._commentsModel.delete(updateType, updateComment);
-        update.comments = update.comments.filter((comment) => comment !== updateComment.id);
-        this._filmsModel.update(
-            updateType,
-            Object.assign(
-                {},
-                update,
-                {comments: update.comments}
-            )
-        );
+        this._api.deleteComment(updateComment).then(() => {
+          this._commentsModel.delete(updateType, updateComment);
+        })
+
+        // update.comments = update.comments.filter((comment) => comment !== updateComment.id);
+        // this._filmsModel.update(
+        //     updateType,
+        //     Object.assign(
+        //         {},
+        //         update,
+        //         {comments: update.comments}
+        //     )
+        // );
         break;
     }
   }
@@ -154,7 +173,7 @@ export default class MovieList {
       case UpdateType.INIT:
         this._isLoading = false;
         remove(this._loadingComponent);
-        this._renderMainContent();
+        this._renderMainContent(false);
         if (this._filmsModel.get().length !== 0) {
           this._renderExtraCards();
         }
@@ -282,10 +301,13 @@ export default class MovieList {
   }
 
   // Рендерит Главный контент (карточки фильмов и блоки-экстра)
-  _renderMainContent() {
+  _renderMainContent(isNeedSort = true) {
     const filmCount = this._getFilms().length;
+
+    if (isNeedSort) {
+      this._renderSort();
+    }
     
-    this._renderSort();
     render(this._movieListContainer, this._contentSectionComponent, RenderPosition.BEFOREEND);
 
     if (this._isLoading) {
