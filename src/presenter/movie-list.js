@@ -5,6 +5,7 @@ import FilmPresenter from "./film.js";
 import LoadMoreButtonView from "../view/load-more-button.js";
 import FilmsListExtraSectionView from "../view/extra-section.js";
 import SortView from "../view/sort.js";
+import LoadingView from "../view/loading.js";
 import {render, RenderPosition, remove} from "../utils/render.js";
 import {compareYear, compareRating} from "../utils/films.js";
 import {filter} from "../utils/filter.js";
@@ -13,7 +14,7 @@ const NUMBER_FILMS_PER_STEP = 5;
 const NUMBER_FILMS_IN_ADDITIONAL_BLOCKS = 2;
 
 export default class MovieList {
-  constructor(movieListContainer, filmsModel, filterModel, commentsModel) {
+  constructor(movieListContainer, filmsModel, filterModel, commentsModel, api) {
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
     this._commentsModel = commentsModel;
@@ -25,6 +26,8 @@ export default class MovieList {
     this._filmPresenter = {};
     this._filmPresenterTopRated = {};
     this._filmPresenterMostCommented = {};
+    this._isLoading = true;
+    this._api = api;
 
     this._sortingComponent = null;
     this._loadMoreButtonComponent = null;
@@ -33,6 +36,7 @@ export default class MovieList {
     this._noFilmsComponent = new NoFilmsView();
     this._filmsListExtraTopRatedComponent = new FilmsListExtraSectionView(`Top rated`);
     this._filmsListExtraMostCommentedComponent = new FilmsListExtraSectionView(`Most commented`);
+    this._loadingComponent = new LoadingView();
 
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
@@ -40,6 +44,7 @@ export default class MovieList {
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+    this._renderNoFilms = this._renderNoFilms.bind(this)
 
     this._filmsListElement = null;
     this._filmsListContainer = null;
@@ -52,8 +57,8 @@ export default class MovieList {
 
     this._filmsListElement = this._contentSectionComponent.getElement().querySelector(`.films-list`);
     this._filmsListContainer = this._filmsListElement.querySelector(`.films-list__container`);
-    this._renderMainContent();
-    this._renderExtraCards();
+    
+      this._renderMainContent();
   }
 
   destroy() {
@@ -101,18 +106,22 @@ export default class MovieList {
   _handleViewAction(actionType, updateType, update, updateComment) {
     switch (actionType) {
       case UserAction.UPDATE_FILM:
-        this._filmsModel.update(updateType, update);
+        this._api.updateFilm(update).then((response) => {
+          this._filmsModel.update(updateType, response);
+        });
         break;
       case UserAction.ADD_COMMENT:
-        this._commentsModel.add(updateType, updateComment);
-        this._filmsModel.update(
-            updateType,
-            Object.assign(
-                {},
-                update,
-                {comments: [updateComment.id, ...update.comments]}
-            )
-        );
+        this._filmsModel.update(updateType, update);
+        console.log(update)
+        // this._commentsModel.add(updateType, updateComment);
+        // this._filmsModel.update(
+        //     updateType,
+        //     Object.assign(
+        //         {},
+        //         update,
+        //         {comments: [updateComment.id, ...update.comments]}
+        //     )
+        // );
         break;
       case UserAction.DELETE_COMMENT:
         this._commentsModel.delete(updateType, updateComment);
@@ -142,6 +151,14 @@ export default class MovieList {
         this._clearMainContent({resetRenderedFilmCount: true, resetSortType: true});
         this._renderMainContent();
         break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
+        this._renderMainContent();
+        if (this._filmsModel.get().length !== 0) {
+          this._renderExtraCards();
+        }
+        break;
     }
   }
 
@@ -153,13 +170,15 @@ export default class MovieList {
 
     this._clearMainContent({resetRenderedFilmCount: true});
     this._renderMainContent();
+    this._renderExtraCards();
   }
 
   _renderSort() {
     if (this._sortingComponent !== null) {
+      
       this._sortingComponent = null;
     }
-
+    
     this._sortingComponent = new SortView(this._currentSortType);
     this._sortingComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
 
@@ -197,9 +216,12 @@ export default class MovieList {
     render(this._filmsListElement, this._noFilmsComponent, RenderPosition.BEFOREEND);
   }
 
+  _renderLoading() {
+    render(this._filmsListElement, this._loadingComponent, RenderPosition.BEFOREEND);
+  }
+
   // Рендерит карточку фильма
   _renderCard(film, place, presentersStore) {
-    // const filmPresenter = new FilmPresenter(place, this._handleCardChange, this._handleModeChange);
     const filmPresenter = new FilmPresenter(place, this._handleViewAction, this._handleModeChange, this._commentsModel);
     filmPresenter.init(film);
     presentersStore[film.id] = filmPresenter;
@@ -224,6 +246,7 @@ export default class MovieList {
 
     remove(this._sortingComponent);
     remove(this._noFilmsComponent);
+    remove(this._loadingComponent);
     remove(this._loadMoreButtonComponent);
 
     if (resetRenderedFilmCount) {
@@ -261,15 +284,19 @@ export default class MovieList {
   // Рендерит Главный контент (карточки фильмов и блоки-экстра)
   _renderMainContent() {
     const filmCount = this._getFilms().length;
+    
+    this._renderSort();
+    render(this._movieListContainer, this._contentSectionComponent, RenderPosition.BEFOREEND);
+
+    if (this._isLoading) {
+      this._renderLoading()
+      return;
+    }
 
     if (filmCount === 0) {
       this._renderNoFilms();
       return;
     }
-
-    this._renderSort();
-
-    render(this._movieListContainer, this._contentSectionComponent, RenderPosition.BEFOREEND);
 
     const films = this._getFilms().slice(0, Math.min(filmCount, this._renderedFilmCount));
 
@@ -278,5 +305,6 @@ export default class MovieList {
     if (filmCount > this._renderedFilmCount) {
       this._renderLoadMoreButton();
     }
+    
   }
 }

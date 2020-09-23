@@ -41,7 +41,8 @@ export const UserAction = {
 export const UpdateType = {
   PATCH: `PATCH`,
   MINOR: `MINOR`,
-  MAJOR: `MAJOR`
+  MAJOR: `MAJOR`,
+  INIT: `INIT`
 };
 
 export const FilterType = {
@@ -65,3 +66,6 @@ export const StatisticPeriod = {
 };
 
 export const BAR_HEIGHT = 50;
+
+export const AUTORIZATION = `Basic AndreX-1983`;
+export const END_POINT = `https://12.ecmascript.pages.academy/cinemaddict/`;

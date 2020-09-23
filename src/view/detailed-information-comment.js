@@ -2,14 +2,14 @@ import he from 'he';
 import {formatCommentDate} from "../utils/films.js";
 import SmartView from "./smart.js";
 
-const createDetailedInformationCommentTemplate = ({id, author, text, emoji, date}) => {
+const createDetailedInformationCommentTemplate = ({id, author, comment, emotion, date}) => {
   return (
     `<li class="film-details__comment" id="${id}">
       <span class="film-details__comment-emoji">
-        <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
+        <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
       </span>
       <div>
-        <p class="film-details__comment-text">${he.encode(text)}</p>
+        <p class="film-details__comment-text">${he.encode(comment)}</p>
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${author}</span>
           <span class="film-details__comment-day">${formatCommentDate(date)}</span>

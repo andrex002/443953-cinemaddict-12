@@ -42,13 +42,6 @@ export const createDetailedInformationTemplate = (film) => {
 
   const writersList = createWritersList(screenwriters);
 
-  // const filmDetailsComments =
-  //   comments
-  //   .map((comment) => {
-  //     const detailedCommentComponent = new DetailedCommentView(comment);
-  //     return detailedCommentComponent.getTemplate();
-  //   })
-  //   .join(``);
   const commentsCount = film.comments.length;
 
   return (
@@ -60,9 +53,9 @@ export const createDetailedInformationTemplate = (film) => {
           </div>
           <div class="film-details__info-wrap">
             <div class="film-details__poster">
-              <img class="film-details__poster-img" src="./images/posters/${poster}" alt="">
+              <img class="film-details__poster-img" src="./${poster}" alt="">
 
-              <p class="film-details__age">${ageRating}</p>
+              <p class="film-details__age">${ageRating}+</p>
             </div>
 
             <div class="film-details__info">
