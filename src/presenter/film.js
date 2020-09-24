@@ -76,7 +76,7 @@ export default class Film {
     this._newCommentContainer = this._filmDetailsComponent.getElement().querySelector(`.film-details__comments-wrap`);
 
     this._commentListPresenter = new CommentListPresenter(this._commentsContainer, this._newCommentContainer, this._film, this._changeData, this._commentsModel, this._api);
-    this._api.getComments(this._film.id).then((comments) => this._commentListPresenter.init(comments)); //
+    this._api.getComments(this._film.id).then((comments) => this._commentListPresenter.init(comments));
   }
 
   resetView() {

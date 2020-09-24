@@ -12,6 +12,11 @@ const SuccessHTTPStatusRange = {
   MAX: 299
 };
 
+const Url = {
+  MOVIES: `movies`,
+  COMMENTS: `comments`
+};
+
 export default class Api {
   constructor(endPoint, authorization) {
     this._endPoint = endPoint;
@@ -19,19 +24,19 @@ export default class Api {
   }
 
   getFilms() {
-    return this._load({url: `movies`})
+    return this._load({url: Url.MOVIES})
       .then(Api.toJSON)
       .then((films) => films.map(FilmsModel.adaptToClient));
   }
 
   getComments(filmId) {
-    return this._load({url: `comments/${filmId}`})
+    return this._load({url: `${Url.COMMENTS}/${filmId}`})
       .then(Api.toJSON);
   }
 
   addComment(film, newDataComment) {
     return this._load({
-      url: `comments/${film.id}`,
+      url: `${Url.COMMENTS}/${film.id}`,
       method: Method.POST,
       body: JSON.stringify(newDataComment),
       headers: new Headers({"Content-Type": `application/json`})
@@ -41,14 +46,14 @@ export default class Api {
 
   deleteComment(comment) {
     return this._load({
-      url: `comments/${comment.id}`,
+      url: `${Url.COMMENTS}/${comment.id}`,
       method: Method.DELETE
     });
   }
 
   updateFilm(film) {
     return this._load({
-      url: `movies/${film.id}`,
+      url: `${Url.MOVIES}/${film.id}`,
       method: Method.PUT,
       body: JSON.stringify(FilmsModel.adaptToServer(film)),
       headers: new Headers({"Content-Type": `application/json`})

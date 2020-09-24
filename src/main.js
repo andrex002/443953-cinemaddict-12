@@ -19,7 +19,6 @@ const commentsModel = new CommentsModel();
 const filterModel = new FilterModel();
 const pageModeModel = new PageModeModel();
 
-
 const siteHeaderElement = document.querySelector(`.header`);
 const siteMainElement = document.querySelector(`.main`);
 const siteFooterElement = document.querySelector(`.footer`);
@@ -27,17 +26,17 @@ const siteFooterElement = document.querySelector(`.footer`);
 const movieListPresenter = new MovieListPresenter(siteMainElement, filmsModel, filterModel, commentsModel, api);
 const statisticsScreenPresenter = new StatisticsScreenPresenter(siteMainElement, filmsModel, movieListPresenter, pageModeModel);
 
+const renderStaticComponents = () => {
+  render(siteHeaderElement, new TitleUserView(filmsModel.get()), RenderPosition.BEFOREEND);
+  render(siteFooterElement, new StatisticsView(filmsModel.areExist()), RenderPosition.BEFOREEND);
+};
 
 api.getFilms().then((films) => {
   filmsModel.set(UpdateType.INIT, films);
-  render(siteHeaderElement, new TitleUserView(filmsModel.get()), RenderPosition.BEFOREEND);
-  render(siteFooterElement, new StatisticsView(filmsModel.get().length), RenderPosition.BEFOREEND);
-})
-
-.catch(() => {
+  renderStaticComponents();
+}).catch(() => {
   filmsModel.set(UpdateType.INIT, []);
-  render(siteHeaderElement, new TitleUserView(filmsModel.get()), RenderPosition.BEFOREEND);
-  render(siteFooterElement, new StatisticsView(filmsModel.get().length), RenderPosition.BEFOREEND);
+  renderStaticComponents();
 });
 
 new FilterPresenter(siteMainElement, filterModel, filmsModel, movieListPresenter, statisticsScreenPresenter, pageModeModel).init();

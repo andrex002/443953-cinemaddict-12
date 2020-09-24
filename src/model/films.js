@@ -33,6 +33,10 @@ export default class Films extends Observer {
     this._notify(updateType, update);
   }
 
+  areExist() {
+    return this._films.length;
+  }
+
   static adaptToClient(film) {
     const adaptedFilm = Object.assign(
         {},
@@ -83,28 +87,28 @@ export default class Films extends Observer {
         {},
         film,
         {
-          film_info: {
-            title: film.title,
-            alternative_title: film.originalTitle,
-            poster: film.poster,
-            total_rating: film.rating,
-            runtime: film.duration,
-            description: film.description,
-            director: film.producer,
-            writers: film.screenwriters,
-            actors: film.actors,
-            genre: film.genres,
-            age_rating: film.ageRating,
-            release: {
-              date: film.dateOfRelease,
-              release_country: film.country
+          "film_info": {
+            "title": film.title,
+            "alternative_title": film.originalTitle,
+            "poster": film.poster,
+            "total_rating": film.rating,
+            "runtime": film.duration,
+            "description": film.description,
+            "director": film.producer,
+            "writers": film.screenwriters,
+            "actors": film.actors,
+            "genre": film.genres,
+            "age_rating": film.ageRating,
+            "release": {
+              "date": film.dateOfRelease,
+              "release_country": film.country
             }
           },
-          user_details: {
-            watchlist: film.isWatchlist,
-            already_watched: film.isWatched,
-            watching_date: film.watchingDate,
-            favorite: film.isFavorite
+          "user_details": {
+            "watchlist": film.isWatchlist,
+            "already_watched": film.isWatched,
+            "watching_date": film.watchingDate,
+            "favorite": film.isFavorite
           }
         }
     );

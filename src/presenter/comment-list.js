@@ -41,18 +41,14 @@ export default class CommentList {
 
   _handleCommentSubmit() {
     const newComment = this._newCommentComponent.getNewComment();
-
     this._api.addComment(this._film, newComment)
       .then((response) => {
-        this._commentsModel.add(UpdateType.PATCH, response.comments);
+        this._commentsModel.set(response.comments);
 
         this._changeData(
             UserAction.ADD_COMMENT,
             UpdateType.PATCH,
-            this._film,
-            {
-              comments: this._commentsModel.get()
-            }
+            this._film
         );
       });
   }
