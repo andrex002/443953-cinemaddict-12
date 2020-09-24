@@ -132,10 +132,12 @@ export default class MovieList {
       case UpdateType.MINOR:
         this._clearMainContent();
         this._renderMainContent();
+        this._renderExtraCards();
         break;
       case UpdateType.MAJOR:
         this._clearMainContent({resetRenderedFilmCount: true, resetSortType: true});
         this._renderMainContent();
+        this._renderExtraCards();
         break;
       case UpdateType.INIT:
         this._isLoading = false;
@@ -161,7 +163,6 @@ export default class MovieList {
 
   _renderSort() {
     if (this._sortingComponent !== null) {
-
       this._sortingComponent = null;
     }
 
@@ -208,7 +209,7 @@ export default class MovieList {
 
   // Рендерит карточку фильма
   _renderCard(film, place, presentersStore) {
-    const filmPresenter = new FilmPresenter(place, this._handleViewAction, this._handleModeChange, this._commentsModel);
+    const filmPresenter = new FilmPresenter(place, this._handleViewAction, this._handleModeChange, this._commentsModel, this._filterModel);
     filmPresenter.init(film);
     presentersStore[film.id] = filmPresenter;
   }
@@ -250,7 +251,7 @@ export default class MovieList {
   _renderExtraCards() {
     // Отрисуем карточки с фильмами в блок "Top rated"
     let filmsRating = this._getFilms().slice();
-
+    
     render(this._contentSectionComponent, this._filmsListExtraTopRatedComponent, RenderPosition.BEFOREEND);
 
     const extraTopRatedFilmListContainerElement = this._filmsListExtraTopRatedComponent.getElement().querySelector(`.films-list__container`);

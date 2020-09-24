@@ -2,6 +2,7 @@ import CommentPresenter from './comment.js';
 import NewCommentView from '../view/new-comment.js';
 import {UserAction, UpdateType} from '../const.js';
 import {render, RenderPosition} from '../utils/render.js';
+import {shakeEffect} from '../utils/common';
 
 export default class CommentList {
   constructor(commentsContainer, newCommentContainer, film, changeData, commentsModel, api) {
@@ -28,7 +29,11 @@ export default class CommentList {
   }
 
   _handleCommentDeleteClick(userAction, updateType, update) {
-    this._commentPresenter[update.id].destroy();
+    this._commentPresenter[update.id].setDeletingState();
+    Object
+        .values(this._commentPresenter)
+        .forEach((presenter) => presenter.disabledButton());
+
     this._api.deleteComment(update).then(() => {
       this._commentsModel.delete(updateType, update);
       this._changeData(
@@ -36,21 +41,46 @@ export default class CommentList {
           updateType,
           this._film
       );
-    });
+    }).catch(() => {
+      this._commentPresenter[update.id].shakeDeletingComment();
+      this._commentPresenter[update.id].setDeleteState();
+      Object 
+          .values(this._commentPresenter)
+          .forEach((presenter) => presenter.deployButton());
+    })
   }
 
   _handleCommentSubmit() {
     const newComment = this._newCommentComponent.getNewComment();
-    this._api.addComment(this._film, newComment)
-      .then((response) => {
-        this._commentsModel.set(response.comments);
+    if (!newComment.emotion || !newComment.comment) {
+      shakeEffect(this._newCommentComponent);
 
-        this._changeData(
+      if (!newComment.emotion) {
+        this._newCommentComponent.getEmojiLabelErrorColor();
+      }
+
+      if (!newComment.comment) {
+        this._newCommentComponent.getTextareaErrorColor();
+      }
+    } else {
+      this._newCommentComponent.getBorderColor();
+      this._newCommentComponent.disabledNewCommentForm();
+
+      this._api.addComment(this._film, newComment)
+        .then((response) => {
+          this._commentsModel.set(response.comments);
+
+          this._changeData(
             UserAction.ADD_COMMENT,
             UpdateType.PATCH,
             this._film
-        );
-      });
+          );
+        })
+        .catch(() => {
+          shakeEffect(this._newCommentComponent);
+          this._newCommentComponent.deployNewCommentForm();
+        });
+    }
   }
 
   _renderComment(comment) {
