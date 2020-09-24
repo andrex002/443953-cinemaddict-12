@@ -33,7 +33,7 @@ const renderStaticComponents = () => {
 
 api.getFilms().then((films) => {
   filmsModel.set(UpdateType.INIT, films);
-  
+
   renderStaticComponents();
 }).catch(() => {
   filmsModel.set(UpdateType.INIT, []);

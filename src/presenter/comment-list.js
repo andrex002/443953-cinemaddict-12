@@ -44,10 +44,10 @@ export default class CommentList {
     }).catch(() => {
       this._commentPresenter[update.id].shakeDeletingComment();
       this._commentPresenter[update.id].setDeleteState();
-      Object 
+      Object
           .values(this._commentPresenter)
           .forEach((presenter) => presenter.deployButton());
-    })
+    });
   }
 
   _handleCommentSubmit() {
@@ -71,9 +71,9 @@ export default class CommentList {
           this._commentsModel.set(response.comments);
 
           this._changeData(
-            UserAction.ADD_COMMENT,
-            UpdateType.PATCH,
-            this._film
+              UserAction.ADD_COMMENT,
+              UpdateType.PATCH,
+              this._film
           );
         })
         .catch(() => {

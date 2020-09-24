@@ -92,7 +92,7 @@ export default class Film {
   }
 
   _handleFavoriteClick() {
-    const isMinorUpdate = this._filterModel.get() === `favorites` ? true : false; 
+    const isMinorUpdate = this._filterModel.get() === `favorites` ? true : false;
     this._changeData(
         UserAction.UPDATE_FILM,
         isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,

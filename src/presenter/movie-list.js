@@ -251,7 +251,7 @@ export default class MovieList {
   _renderExtraCards() {
     // Отрисуем карточки с фильмами в блок "Top rated"
     let filmsRating = this._getFilms().slice();
-    
+
     render(this._contentSectionComponent, this._filmsListExtraTopRatedComponent, RenderPosition.BEFOREEND);
 
     const extraTopRatedFilmListContainerElement = this._filmsListExtraTopRatedComponent.getElement().querySelector(`.films-list__container`);
