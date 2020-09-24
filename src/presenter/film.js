@@ -2,7 +2,8 @@ import {render, RenderPosition, remove, replace} from "../utils/render.js";
 import MovieCardView from "../view/movie-card.js";
 import DetailedInformationView from "../view/detailed-information.js";
 import CommentListPresenter from "./comment-list.js";
-import {UserAction, UpdateType} from "../const.js";
+import {AUTORIZATION, END_POINT, UserAction, UpdateType} from "../const.js";
+import Api from '../api';
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -17,6 +18,7 @@ export default class Film {
     this._filmCardComponent = null;
     this._filmDetailsComponent = null;
     this._mode = Mode.DEFAULT;
+    this._api = new Api(END_POINT, AUTORIZATION);
 
     this._commentsModel = commentsModel;
 
@@ -32,6 +34,7 @@ export default class Film {
   init(film) {
     this._film = film;
 
+    this._commentsModel.set(this._film.comments);
     const prevFilmCardComponent = this._filmCardComponent;
     const prevFilmDetailsComponent = this._filmDetailsComponent;
 
@@ -72,8 +75,8 @@ export default class Film {
     this._commentsContainer = this._filmDetailsComponent.getElement().querySelector(`.film-details__comments-list`);
     this._newCommentContainer = this._filmDetailsComponent.getElement().querySelector(`.film-details__comments-wrap`);
 
-    this._commentListPresenter = new CommentListPresenter(this._commentsContainer, this._newCommentContainer, this._film, this._changeData, this._commentsModel);
-    this._commentListPresenter.init(this._commentsModel.getByIds(this._film.comments));
+    this._commentListPresenter = new CommentListPresenter(this._commentsContainer, this._newCommentContainer, this._film, this._changeData, this._commentsModel, this._api);
+    this._api.getComments(this._film.id).then((comments) => this._commentListPresenter.init(comments));
   }
 
   resetView() {
