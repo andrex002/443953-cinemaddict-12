@@ -2,6 +2,11 @@ import he from 'he';
 import {formatCommentDate} from "../utils/films.js";
 import SmartView from "./smart.js";
 
+const DeleteButtonText = {
+  DELETING: `Deleting...`,
+  DELETE: `Delete`
+};
+
 const createDetailedInformationCommentTemplate = ({id, author, comment, emotion, date}) => {
   return (
     `<li class="film-details__comment" id="${id}">
@@ -30,6 +35,14 @@ export default class DetailedComment extends SmartView {
 
   getTemplate() {
     return createDetailedInformationCommentTemplate(this._comment);
+  }
+
+  setDeletingState() {
+    this.getElement().querySelector(`.film-details__comment-delete`).textContent = DeleteButtonText.DELETING;
+  }
+
+  setDeleteState() {
+    this.getElement().querySelector(`.film-details__comment-delete`).textContent = DeleteButtonText.DELETE;
   }
 
   _deleteButtonClickHandler(evt) {
