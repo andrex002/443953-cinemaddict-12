@@ -81,12 +81,16 @@ export default class NewComment extends SmartView {
 
   disabledNewCommentForm() {
     this.getElement().querySelector(`.film-details__comment-input`).disabled = true;
-    this.getElement().querySelectorAll(`.film-details__emoji-item`).forEach((item) => item.disabled = true);
+    this.getElement().querySelectorAll(`.film-details__emoji-item`).forEach((item) => {
+      item.disabled = true;
+    });
   }
 
   deployNewCommentForm() {
     this.getElement().querySelector(`.film-details__comment-input`).disabled = false;
-    this.getElement().querySelectorAll(`.film-details__emoji-item`).forEach((item) => item.disabled = false);
+    this.getElement().querySelectorAll(`.film-details__emoji-item`).forEach((item) => {
+      item.disabled = false;
+    });
   }
 
   _setInnerHandler() {
