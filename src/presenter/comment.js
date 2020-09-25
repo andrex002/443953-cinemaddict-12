@@ -25,19 +25,19 @@ export default class Comment {
   }
 
   disabledButton() {
-    this._commentComponent.getElement().querySelector(`.film-details__comment-delete`).disabled = true;
+    this._commentComponent.disabledButton();
   }
 
   setDeletingState() {
-    return this._commentComponent.setDeletingState();
+    this._commentComponent.setDeletingState();
   }
 
   setDeleteState() {
-    return this._commentComponent.setDeleteState();
+    this._commentComponent.setDeleteState();
   }
 
   deployButton() {
-    this._commentComponent.getElement().querySelector(`.film-details__comment-delete`).disabled = false;
+    this._commentComponent.deployButton();
   }
 
   destroy() {

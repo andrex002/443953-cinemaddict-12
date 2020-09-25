@@ -66,31 +66,27 @@ export default class NewComment extends SmartView {
     this.getElement().addEventListener(`keydown`, this._commentSubmitHandler);
   }
 
-  getTextareaErrorColor() {
+  setTextareaErrorColor() {
     this.getElement().querySelector(`.film-details__comment-input`).style.borderColor = `red`;
   }
 
-  getEmojiLabelErrorColor() {
+  setEmojiLabelErrorColor() {
     this.getElement().querySelector(`.film-details__add-emoji-label`).style.borderColor = `red`;
   }
 
-  getBorderColor() {
+  setBorderColor() {
     this.getElement().querySelector(`.film-details__comment-input`).style.borderColor = `#979797`;
     this.getElement().querySelector(`.film-details__add-emoji-label`).style.borderColor = `#979797`;
   }
 
   disabledNewCommentForm() {
     this.getElement().querySelector(`.film-details__comment-input`).disabled = true;
-    this.getElement().querySelectorAll(`.film-details__emoji-item`).forEach(function (item) {
-      item.disabled = true;
-    });
+    this.getElement().querySelectorAll(`.film-details__emoji-item`).forEach((item) => item.disabled = true);
   }
 
   deployNewCommentForm() {
     this.getElement().querySelector(`.film-details__comment-input`).disabled = false;
-    this.getElement().querySelectorAll(`.film-details__emoji-item`).forEach(function (item) {
-      item.disabled = false;
-    });
+    this.getElement().querySelectorAll(`.film-details__emoji-item`).forEach((item) => item.disabled = false);
   }
 
   _setInnerHandler() {

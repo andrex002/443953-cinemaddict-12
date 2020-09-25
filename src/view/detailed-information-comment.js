@@ -45,13 +45,21 @@ export default class DetailedComment extends SmartView {
     this.getElement().querySelector(`.film-details__comment-delete`).textContent = DeleteButtonText.DELETE;
   }
 
-  _deleteButtonClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.deleteClick(this._comment);
-  }
-
   setCommentDeleteClickHandler(callback) {
     this._callback.deleteClick = callback;
     this.getElement().querySelector(`.film-details__comment-delete`).addEventListener(`click`, this._deleteButtonClickHandler);
+  }
+
+  disabledButton() {
+    this.getElement().querySelector(`.film-details__comment-delete`).disabled = true;
+  }
+
+  deployButton() {
+    this.getElement().querySelector(`.film-details__comment-delete`).disabled = false;
+  }
+
+  _deleteButtonClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(this._comment);
   }
 }

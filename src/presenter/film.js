@@ -2,7 +2,7 @@ import {render, RenderPosition, remove, replace} from "../utils/render.js";
 import MovieCardView from "../view/movie-card.js";
 import DetailedInformationView from "../view/detailed-information.js";
 import CommentListPresenter from "./comment-list.js";
-import {AUTORIZATION, END_POINT, UserAction, UpdateType} from "../const.js";
+import {AUTORIZATION, END_POINT, UserAction, UpdateType, FilterType} from "../const.js";
 import Api from '../api';
 
 const Mode = {
@@ -92,7 +92,7 @@ export default class Film {
   }
 
   _handleFavoriteClick() {
-    const isMinorUpdate = this._filterModel.get() === `favorites` ? true : false;
+    const isMinorUpdate = this._filterModel.get() === FilterType.FAVORITES;
     this._changeData(
         UserAction.UPDATE_FILM,
         isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
@@ -101,7 +101,7 @@ export default class Film {
   }
 
   _handleWatchedClick() {
-    const isMinorUpdate = this._filterModel.get() === `history` ? true : false;
+    const isMinorUpdate = this._filterModel.get() === FilterType.HISTORY;
     this._changeData(
         UserAction.UPDATE_FILM,
         isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
@@ -110,7 +110,7 @@ export default class Film {
   }
 
   _handleWatchlistClick() {
-    const isMinorUpdate = this._filterModel.get() === `watchlist` ? true : false;
+    const isMinorUpdate = this._filterModel.get() === FilterType.WATCHLIST;
     this._changeData(
         UserAction.UPDATE_FILM,
         isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,

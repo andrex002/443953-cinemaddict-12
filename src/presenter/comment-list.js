@@ -56,14 +56,14 @@ export default class CommentList {
       shakeEffect(this._newCommentComponent);
 
       if (!newComment.emotion) {
-        this._newCommentComponent.getEmojiLabelErrorColor();
+        this._newCommentComponent.setEmojiLabelErrorColor();
       }
 
       if (!newComment.comment) {
-        this._newCommentComponent.getTextareaErrorColor();
+        this._newCommentComponent.setTextareaErrorColor();
       }
     } else {
-      this._newCommentComponent.getBorderColor();
+      this._newCommentComponent.setBorderColor();
       this._newCommentComponent.disabledNewCommentForm();
 
       this._api.addComment(this._film, newComment)
