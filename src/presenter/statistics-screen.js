@@ -23,6 +23,10 @@ export default class StatisticsScreen {
     render(this._statisticsContainer, this._statisticsComponent, RenderPosition.BEFOREEND);
   }
 
+  destroy() {
+    remove(this._statisticsComponent);
+  }
+
   _getStatisticsData() {
     const filteredFilms = this._getWatchedFilms();
 
@@ -35,10 +39,6 @@ export default class StatisticsScreen {
       rankLabel: this._getRankLabel(),
       currentPeriod: this._currentPeriod
     };
-  }
-
-  destroy() {
-    remove(this._statisticsComponent);
   }
 
   _getWatchedFilms() {

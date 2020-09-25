@@ -8,17 +8,17 @@ export const getFilmsDuration = (films) => {
   }, 0);
 };
 
-export const sortedGenres = (data) => {
-  if (data.length === 0) {
-    return data.length;
+export const sortedGenres = (films) => {
+  if (films.length === 0) {
+    return films.length;
   }
   const allGenres = [];
 
-  data.forEach((film) => {
+  films.forEach((film) => {
     allGenres.push(...film.genres);
   });
 
-  let amountWatchedGenres = {};
+  const amountWatchedGenres = {};
   allGenres.forEach((genre) => {
     amountWatchedGenres[genre] = amountWatchedGenres[genre] + 1 || 1;
   });
@@ -26,12 +26,12 @@ export const sortedGenres = (data) => {
   return amountWatchedGenres;
 };
 
-export const definitionTopGenre = (data) => {
-  if (data.length === 0) {
+export const definitionTopGenre = (films) => {
+  if (films.length === 0) {
     return ``;
   }
 
-  const amountWatchedGenres = sortedGenres(data);
+  const amountWatchedGenres = sortedGenres(films);
 
   function getKeyByValue(object, value) {
     return Object.keys(object).find((key) => object[key] === value);

@@ -28,6 +28,11 @@ export default class CommentList {
     this._newCommentComponent.setSubmitCommentHandler(this._handleCommentSubmit);
   }
 
+  renderCommentsList() {
+    const comments = this._commentsModel.get();
+    this._renderComments(comments);
+  }
+
   _handleCommentDeleteClick(userAction, updateType, update) {
     this._commentPresenter[update.id].setDeletingState();
     Object
@@ -92,10 +97,5 @@ export default class CommentList {
 
   _renderComments(comments) {
     comments.forEach((comment) => this._renderComment(comment));
-  }
-
-  renderCommentsList() {
-    const comments = this._commentsModel.get();
-    this._renderComments(comments);
   }
 }

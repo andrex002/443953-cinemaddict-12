@@ -10,17 +10,8 @@ export default class Comments extends Observer {
     this._comments = comments.slice();
   }
 
-  getByIds(ids) {
-    return this._comments.filter((comment) => ids.includes(comment.id));
-  }
-
   get() {
     return this._comments;
-  }
-
-  add(updateType, update) {
-    this._comments = [update, ...this._comments];
-    this._notify(updateType, update);
   }
 
   delete(updateType, update) {

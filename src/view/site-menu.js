@@ -32,12 +32,9 @@ export default class SiteMenu extends AbstractView {
     return createSiteMenuTemplate(this._filters, this._currentFilter, this._pageMode);
   }
 
-  _filterTypeChangeHandler(evt) {
-    evt.preventDefault();
-
-    let id = evt.target.classList.contains(`main-navigation__item-count`) ? evt.target.parentElement.id : evt.target.id;
-
-    this._callback.filterTypeChange(id);
+  setStatisticsClickHandler(callback) {
+    this._callback.statisticsClick = callback;
+    this.getElement().querySelector(`.main-navigation__additional`).addEventListener(`click`, this._statisticsClickHandler);
   }
 
   setFilterTypeChangeHandler(callback) {
@@ -48,13 +45,16 @@ export default class SiteMenu extends AbstractView {
     });
   }
 
+  _filterTypeChangeHandler(evt) {
+    evt.preventDefault();
+
+    const id = evt.target.classList.contains(`main-navigation__item-count`) ? evt.target.parentElement.id : evt.target.id;
+
+    this._callback.filterTypeChange(id);
+  }
+
   _statisticsClickHandler(evt) {
     evt.preventDefault();
     this._callback.statisticsClick();
-  }
-
-  setStatisticsClickHandler(callback) {
-    this._callback.statisticsClick = callback;
-    this.getElement().querySelector(`.main-navigation__additional`).addEventListener(`click`, this._statisticsClickHandler);
   }
 }

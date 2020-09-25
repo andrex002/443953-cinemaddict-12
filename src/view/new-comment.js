@@ -93,6 +93,11 @@ export default class NewComment extends SmartView {
     });
   }
 
+  setSubmitCommentHandler(callback) {
+    this._callback.submitComment = callback;
+    this.getElement().addEventListener(`keydown`, this._commentSubmitHandler);
+  }
+
   _setInnerHandler() {
     this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`input`, this._commentInputHandler);
     this.getElement().querySelector(`.film-details__emoji-list`).addEventListener(`change`, this._emojiClickHandler);
@@ -116,11 +121,6 @@ export default class NewComment extends SmartView {
       evt.preventDefault();
       this._callback.submitComment();
     }
-  }
-
-  setSubmitCommentHandler(callback) {
-    this._callback.submitComment = callback;
-    this.getElement().addEventListener(`keydown`, this._commentSubmitHandler);
   }
 
   static parseCommentToData(comment) {

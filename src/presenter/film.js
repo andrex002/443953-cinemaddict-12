@@ -72,14 +72,6 @@ export default class Film {
     remove(prevFilmDetailsComponent);
   }
 
-  _initDetailsCard() {
-    this._commentsContainer = this._filmDetailsComponent.getElement().querySelector(`.film-details__comments-list`);
-    this._newCommentContainer = this._filmDetailsComponent.getElement().querySelector(`.film-details__comments-wrap`);
-
-    this._commentListPresenter = new CommentListPresenter(this._commentsContainer, this._newCommentContainer, this._film, this._changeData, this._commentsModel, this._api);
-    this._api.getComments(this._film.id).then((comments) => this._commentListPresenter.init(comments));
-  }
-
   resetView() {
     if (this._mode !== Mode.DEFAULT) {
       remove(this._filmDetailsComponent);
@@ -89,6 +81,14 @@ export default class Film {
   destroy() {
     remove(this._filmCardComponent);
     remove(this._filmDetailsComponent);
+  }
+
+  _initDetailsCard() {
+    this._commentsContainer = this._filmDetailsComponent.getElement().querySelector(`.film-details__comments-list`);
+    this._newCommentContainer = this._filmDetailsComponent.getElement().querySelector(`.film-details__comments-wrap`);
+
+    this._commentListPresenter = new CommentListPresenter(this._commentsContainer, this._newCommentContainer, this._film, this._changeData, this._commentsModel, this._api);
+    this._api.getComments(this._film.id).then((comments) => this._commentListPresenter.init(comments));
   }
 
   _handleFavoriteClick() {
