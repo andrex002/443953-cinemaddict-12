@@ -2,7 +2,7 @@ import SmartView from './smart';
 import {generateDateInIsoFormat} from '../utils/common.js';
 
 const BLANK_COMMENT = {
-  emotion: `smile`,
+  emotion: ``,
   comment: ``
 };
 
@@ -56,7 +56,7 @@ export default class NewComment extends SmartView {
         {},
         this._data,
         {
-          author: `AndreX`,
+          date: generateDateInIsoFormat(Date.now())
         }
     );
   }
@@ -64,6 +64,33 @@ export default class NewComment extends SmartView {
   restoreHandlers() {
     this._setInnerHandler();
     this.getElement().addEventListener(`keydown`, this._commentSubmitHandler);
+  }
+
+  setTextareaErrorColor() {
+    this.getElement().querySelector(`.film-details__comment-input`).style.borderColor = `red`;
+  }
+
+  setEmojiLabelErrorColor() {
+    this.getElement().querySelector(`.film-details__add-emoji-label`).style.borderColor = `red`;
+  }
+
+  setBorderColor() {
+    this.getElement().querySelector(`.film-details__comment-input`).style.borderColor = `#979797`;
+    this.getElement().querySelector(`.film-details__add-emoji-label`).style.borderColor = `#979797`;
+  }
+
+  disabledNewCommentForm() {
+    this.getElement().querySelector(`.film-details__comment-input`).disabled = true;
+    this.getElement().querySelectorAll(`.film-details__emoji-item`).forEach((item) => {
+      item.disabled = true;
+    });
+  }
+
+  deployNewCommentForm() {
+    this.getElement().querySelector(`.film-details__comment-input`).disabled = false;
+    this.getElement().querySelectorAll(`.film-details__emoji-item`).forEach((item) => {
+      item.disabled = false;
+    });
   }
 
   _setInnerHandler() {
@@ -74,8 +101,7 @@ export default class NewComment extends SmartView {
   _commentInputHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      comment: evt.target.value,
-      date: generateDateInIsoFormat(Date.now())
+      comment: evt.target.value
     }, true);
   }
   _emojiClickHandler(evt) {

@@ -69,3 +69,4 @@ export const BAR_HEIGHT = 50;
 
 export const AUTORIZATION = `Basic AndreX-1983`;
 export const END_POINT = `https://12.ecmascript.pages.academy/cinemaddict/`;
+export const SHAKE_ANIMATION_TIMEOUT = 600;

@@ -2,6 +2,11 @@ import he from 'he';
 import {formatCommentDate} from "../utils/films.js";
 import SmartView from "./smart.js";
 
+const DeleteButtonText = {
+  DELETING: `Deleting...`,
+  DELETE: `Delete`
+};
+
 const createDetailedInformationCommentTemplate = ({id, author, comment, emotion, date}) => {
   return (
     `<li class="film-details__comment" id="${id}">
@@ -32,13 +37,29 @@ export default class DetailedComment extends SmartView {
     return createDetailedInformationCommentTemplate(this._comment);
   }
 
-  _deleteButtonClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.deleteClick(this._comment);
+  setDeletingState() {
+    this.getElement().querySelector(`.film-details__comment-delete`).textContent = DeleteButtonText.DELETING;
+  }
+
+  setDeleteState() {
+    this.getElement().querySelector(`.film-details__comment-delete`).textContent = DeleteButtonText.DELETE;
   }
 
   setCommentDeleteClickHandler(callback) {
     this._callback.deleteClick = callback;
     this.getElement().querySelector(`.film-details__comment-delete`).addEventListener(`click`, this._deleteButtonClickHandler);
+  }
+
+  disabledButton() {
+    this.getElement().querySelector(`.film-details__comment-delete`).disabled = true;
+  }
+
+  deployButton() {
+    this.getElement().querySelector(`.film-details__comment-delete`).disabled = false;
+  }
+
+  _deleteButtonClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(this._comment);
   }
 }

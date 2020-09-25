@@ -2,7 +2,7 @@ import {render, RenderPosition, remove, replace} from "../utils/render.js";
 import MovieCardView from "../view/movie-card.js";
 import DetailedInformationView from "../view/detailed-information.js";
 import CommentListPresenter from "./comment-list.js";
-import {AUTORIZATION, END_POINT, UserAction, UpdateType} from "../const.js";
+import {AUTORIZATION, END_POINT, UserAction, UpdateType, FilterType} from "../const.js";
 import Api from '../api';
 
 const Mode = {
@@ -11,10 +11,11 @@ const Mode = {
 };
 
 export default class Film {
-  constructor(listContainerComponent, changeData, changeMode, commentsModel) {
+  constructor(listContainerComponent, changeData, changeMode, commentsModel, filterModel) {
     this._listContainerComponent = listContainerComponent;
     this._changeData = changeData;
     this._changeMode = changeMode;
+    this._filterModel = filterModel;
     this._filmCardComponent = null;
     this._filmDetailsComponent = null;
     this._mode = Mode.DEFAULT;
@@ -91,25 +92,28 @@ export default class Film {
   }
 
   _handleFavoriteClick() {
+    const isMinorUpdate = this._filterModel.get() === FilterType.FAVORITES;
     this._changeData(
         UserAction.UPDATE_FILM,
-        UpdateType.PATCH,
+        isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
         Object.assign({}, this._film, {isFavorite: !this._film.isFavorite})
     );
   }
 
   _handleWatchedClick() {
+    const isMinorUpdate = this._filterModel.get() === FilterType.HISTORY;
     this._changeData(
         UserAction.UPDATE_FILM,
-        UpdateType.PATCH,
+        isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
         Object.assign({}, this._film, {isWatched: !this._film.isWatched})
     );
   }
 
   _handleWatchlistClick() {
+    const isMinorUpdate = this._filterModel.get() === FilterType.WATCHLIST;
     this._changeData(
         UserAction.UPDATE_FILM,
-        UpdateType.PATCH,
+        isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
         Object.assign({}, this._film, {isWatchlist: !this._film.isWatchlist})
     );
   }

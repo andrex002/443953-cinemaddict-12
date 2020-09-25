@@ -1,3 +1,5 @@
+import {SHAKE_ANIMATION_TIMEOUT} from '../const';
+
 export const getRandomInteger = (a, b) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -29,4 +31,11 @@ export const getCurrentDate = () => {
   currentDate.setHours(23, 59, 59, 999);
 
   return new Date(currentDate);
+};
+
+export const shakeEffect = (component) => {
+  component.getElement().style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+  setTimeout(() => {
+    component.getElement().style.animation = ``;
+  }, SHAKE_ANIMATION_TIMEOUT);
 };
